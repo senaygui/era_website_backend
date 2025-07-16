@@ -59,6 +59,11 @@ gem "active_storage_validations"
 gem "acts-as-taggable-on"
 gem "rack-cors"
 group :development, :test do
+  gem "capistrano", "~> 3.11"
+  gem "capistrano-passenger", "~> 0.2.0"
+  gem "capistrano-rails", "~> 1.4"
+  gem "capistrano-rails-db"
+  gem "capistrano-rbenv", "~> 2.1", ">= 2.1.4"
   gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
