@@ -3,6 +3,7 @@ class Ability
 
   def initialize(user)
     user ||= AdminUser.new
+    Rails.logger.debug "Current user role: #{user.role.inspect}"
 
     case user.role
 
