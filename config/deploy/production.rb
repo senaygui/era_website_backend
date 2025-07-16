@@ -4,9 +4,9 @@ set :ssh_options, {
   verify_host_key: :never
 }
 
-role :app, %w[deploy@172.16.10.27]
-role :web, %w[deploy@172.16.10.27]
-role :db, %w[deploy@172.16.10.27], primary: true
+role :app, %w[deploy@196.189.55.254]
+role :web, %w[deploy@196.189.55.254]
+role :db, %w[deploy@196.189.55.254], primary: true
 
 # set :branch, "main"
 set :branch, "main"
