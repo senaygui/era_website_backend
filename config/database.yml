@@ -89,18 +89,18 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: era_website_backend_production
-    username: era_website_backend
-    password: <%= ENV["ERA_WEBSITE_BACKEND_DATABASE_PASSWORD"] %>
+    database: era_website_db
+    username: <%= Rails.application.credentials.dig(:production, :db, :username) %>
+    password: <%= Rails.application.credentials.dig(:production, :db, :password) %>
   cache:
     <<: *primary_production
-    database: era_website_backend_production_cache
+    database: era_website_db_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: era_website_backend_production_queue
+    database: era_website_db_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: era_website_backend_production_cable
+    database: era_website_db_cable
     migrations_paths: db/cable_migrate
