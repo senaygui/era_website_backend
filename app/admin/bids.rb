@@ -35,33 +35,33 @@ ActiveAdmin.register Bid do
       f.input :bid_number
       f.input :title
       f.input :category, as: :select, collection: [
-        'Road Construction', 
-        'Road Rehabilitation', 
-        'Bridge Construction',
-        'Consultancy Services',
-        'Road Maintenance',
-        'Goods'
+        "Road Construction",
+        "Road Rehabilitation",
+        "Bridge Construction",
+        "Consultancy Services",
+        "Road Maintenance",
+        "Goods"
       ]
       f.input :type_of_bid, as: :select, collection: [
-        'International Competitive Bidding',
-        'National Competitive Bidding',
-        'Request for Proposals',
-        'Direct Procurement'
+        "International Competitive Bidding",
+        "National Competitive Bidding",
+        "Request for Proposals",
+        "Direct Procurement"
       ]
-      f.input :status, as: :select, collection: ['active', 'closed']
+      f.input :status, as: :select, collection: [ "active", "closed" ]
       f.input :publish_date, as: :datepicker
       f.input :deadline_date, as: :datepicker
       f.input :budget
       f.input :funding_source
       f.input :description, as: :text
-      f.input :eligibility, as: :text, input_html: { 
+      f.input :eligibility, as: :text, input_html: {
         value: f.object.eligibility.to_json,
         hint: 'JSON array of eligibility criteria, e.g., ["Criterion 1", "Criterion 2"]'
       }
       f.input :contact_person
       f.input :contact_email
       f.input :contact_phone
-      f.input :award_status, as: :select, collection: ['', 'awarded', 'cancelled']
+      f.input :award_status, as: :select, collection: [ "", "awarded", "cancelled" ]
       f.input :awarded_to
       f.input :award_date, as: :datepicker
       f.input :contract_value
@@ -94,7 +94,7 @@ ActiveAdmin.register Bid do
         else
           bid.eligibility
         end
-        
+
         if eligibility_data.is_a?(Array) && eligibility_data.any?
           ul do
             eligibility_data.each do |item|
@@ -120,7 +120,7 @@ ActiveAdmin.register Bid do
             bid.documents.each do |doc|
               li do
                 span doc.filename.to_s
-                span link_to 'Download', url_for(doc), target: '_blank'
+                span link_to "Download Document", url_for(doc), target: "_blank"
               end
             end
           end
