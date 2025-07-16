@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Test</title>
+</head>
+<body>
+  <h1>Testing API Endpoint</h1>
+  <div id="result"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const resultDiv = document.getElementById('result');
+      
+      // Test the API endpoint
+      fetch('http://localhost:3000/api/v1/about')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          resultDiv.innerHTML = `
+            <h2>API Response:</h2>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+          console.log('API data:', data);
+        })
+        .catch(error => {
+          resultDiv.innerHTML = `
+            <h2>Error:</h2>
+            <p style="color: red;">${error.message}</p>
+          `;
+          console.error('Error fetching data:', error);
+        });
+    });
+  </script>
+</body>
+</html>
