@@ -93,7 +93,9 @@ ActiveAdmin.setup do |config|
 
   # You can customize your CanCan Ability class name here.
   # config.cancan_ability_class = "Ability"
-
+  config.authorization_adapter = ActiveAdmin::CanCanAdapter
+  config.on_unauthorized_access = :access_denied
+  config.cancan_ability_class = "Ability"
   # You can specify a method to be called on unauthorized access.
   # This is necessary in order to prevent a redirect loop which happens
   # because, by default, user gets redirected to Dashboard. If user
@@ -174,7 +176,7 @@ ActiveAdmin.setup do |config|
   # You can exclude possibly sensitive model attributes from being displayed,
   # added to forms, or exported by default by ActiveAdmin
   #
-  config.filter_attributes = [:encrypted_password, :password, :password_confirmation]
+  config.filter_attributes = [ :encrypted_password, :password, :password_confirmation ]
 
   # == Localize Date/Time Format
   #
