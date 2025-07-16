@@ -4,15 +4,15 @@ set :ssh_options, {
   verify_host_key: :never
 }
 
-role :app, %w{deploy@172.16.10.27}
-role :web, %w{deploy@172.16.10.27}
-role :db, %w{deploy@172.16.10.27}, :primary => true
+role :app, %w[deploy@172.16.10.27]
+role :web, %w[deploy@172.16.10.27]
+role :db, %w[deploy@172.16.10.27], primary: true
 
-#set :branch, "main"
-set :branch, "master" 
+# set :branch, "main"
+set :branch, "main"
 set :rails_env, "production"
 
-set :deploy_to, '/home/deploy/era_website_backend' 
+set :deploy_to, "/home/deploy/era_website_backend"
 
 # You can define all roles on a single server, or split them:
 
