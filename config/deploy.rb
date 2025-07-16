@@ -5,7 +5,7 @@ lock "~> 3.19.2"
 set :application, "main"
 # set :ssh_options, { :forward_agent => true }
 set :repo_url, "https://github.com/senaygui/era_website_backend.git"
-
+set :branch, 'main'
 
 set :git_http_username, "senaygui"
 ask(:github_token, "github_token", echo: false)
