@@ -3,11 +3,11 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   def not_found
-    render json: { error: 'Not Found' }, status: :not_found
+    render json: { error: "Not Found" }, status: :not_found
   end
 
   def render_404
-    render file: 'public/404.html', status: :not_found, layout: false
+    render file: "public/404.html", status: :not_found, layout: false
   end
 
   rescue_from ActionController::RoutingError, with: :render_404

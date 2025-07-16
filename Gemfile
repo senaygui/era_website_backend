@@ -58,6 +58,7 @@ gem "active_storage_drag_and_drop"
 gem "active_storage_validations"
 gem "acts-as-taggable-on"
 gem "rack-cors"
+gem "active_model_serializers", "~> 0.10"
 group :development, :test do
   gem "capistrano", "~> 3.11"
   gem "capistrano-passenger", "~> 0.2.0"
