@@ -2,7 +2,7 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.19.2"
 
-set :application, "master"
+set :application, "main"
 # set :ssh_options, { :forward_agent => true }
 set :repo_url, "https://github.com/senaygui/era_website_backend.git"
 
