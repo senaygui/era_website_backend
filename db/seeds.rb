@@ -10,6 +10,23 @@
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password', role: 'admin', first_name: "admin", last_name: "user") if Rails.env.development?
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
 
+# Create a default admin user for production if none exists
+if Rails.env.production?
+  admin_email =  'admin@production.com'
+  admin_password = 'securepassword123'
+  unless AdminUser.exists?(email: admin_email)
+    AdminUser.create!(
+      email: admin_email,
+      password: admin_password,
+      password_confirmation: admin_password,
+      role: 'admin',
+      first_name: 'Production',
+      last_name: 'Admin'
+    )
+    puts "Created production admin user: \\#{admin_email}"
+  end
+end
+
 # Create test news articles
 puts "Creating test news articles..."
 
