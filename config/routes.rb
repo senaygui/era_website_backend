@@ -60,6 +60,13 @@ Rails.application.routes.draw do
       # About Us endpoint
       get "about", to: "about#index"
 
+      # Publications endpoints
+      resources :publications, only: [:index, :show] do
+        member do
+          get :download
+        end
+      end
+
       # Applicants endpoints
       resources :applicants
     end

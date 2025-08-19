@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_18_120000) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_15_091100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -317,6 +317,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_18_120000) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "team_members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "position"
+    t.string "job_title"
+    t.text "description"
+    t.uuid "about_us_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["about_us_id"], name: "index_team_members_on_about_us_id"
+  end
+
   create_table "vacancies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.string "department", null: false
@@ -345,4 +356,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_18_120000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "applicants", "vacancies", on_delete: :cascade
   add_foreign_key "taggings", "tags"
+  add_foreign_key "team_members", "about_us"
 end

@@ -14,7 +14,15 @@ module Api
           values: @about.values.is_a?(Array) ? @about.values : @about.values_list,
           history: @about.history,
           team_description: @about.team_description,
-          team_members: @about.team_members_list,
+          team_members: @about.team_members.map { |m| {
+            id: m.id,
+            name: m.name,
+            position: m.position,
+            job_title: m.job_title,
+            title: m.job_title, # backward compatibility with old clients
+            description: m.description,
+            image_url: m.image.attached? ? url_for(m.image) : nil
+          } },
           achievements_description: @about.achievements_description,
           achievements: @about.achievements_list,
           milestones_description: @about.milestones_description,

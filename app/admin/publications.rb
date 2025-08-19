@@ -1,13 +1,28 @@
 ActiveAdmin.register Publication do
-  permit_params :title, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: [], file: [], thumbnail: []
+  permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
 
+  # Ensure authors param is normalized for both create and update
+  controller do
+    def create
+      normalize_authors_param
+      super
+    end
 
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:publication])
-    if resource.save
-      redirect_to resource_path, notice: "Publication was successfully updated."
-    else
-      render :edit
+    def update
+      normalize_authors_param
+      super
+    end
+
+    private
+
+    def normalize_authors_param
+      a = params.dig(:publication, :authors)
+      return if a.nil?
+      params[:publication][:authors] = if a.is_a?(String)
+        a.split(',').map(&:strip).reject(&:blank?)
+      else
+        Array(a).reject(&:blank?)
+      end
     end
   end
   # Filters

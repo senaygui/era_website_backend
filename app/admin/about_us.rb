@@ -4,11 +4,12 @@ ActiveAdmin.register AboutUs do
 
   # Permit parameters
   permit_params :title, :subtitle, :description, :mission, :vision, :values, :values_title,
-                :history, :team_description, :team_members, :achievements, :achievements_description,
+                :history, :team_description, :achievements, :achievements_description,
                 :milestones, :milestones_description, :partners,
                 :is_published, :meta_title, :meta_description, :meta_keywords,
                 :hero_image, :mission_image, :vision_image, :history_image, :org_structure_image,
-                team_images: []
+                team_images: [],
+                team_members_attributes: [ :id, :name, :position, :job_title, :description, :image, :_destroy ]
 
   member_action :update, method: :post do
     resource.assign_attributes(permitted_params[:about_us])
@@ -62,10 +63,13 @@ ActiveAdmin.register AboutUs do
       f.input :history_image, as: :file, hint: f.object.persisted? && f.object.history_image.attached? ? image_tag(f.object.history_image, size: "200x150", class: "img-corner") : "No image uploaded"
       f.input :org_structure_image, as: :file, hint: f.object.persisted? && f.object.org_structure_image.attached? ? image_tag(f.object.org_structure_image, size: "200x150", class: "img-corner") : "No image uploaded"
       f.input :team_description, as: :text, input_html: { rows: 4 }
-      f.input :team_members, as: :text, input_html: {
-        rows: 5,
-        value: f.object.team_members.is_a?(Array) ? f.object.team_members.map { |t| "#{t['name']}|#{t['title']}|#{t['image_url']}|#{t['description']}" }.join("\n") : ""
-      }, hint: "Format: Name|Job Title|Image URL|Job Description (one per line)"
+
+      f.has_many :team_members, allow_destroy: true, new_record: true, heading: "Team Members" do |tm|
+        tm.input :name
+        tm.input :job_title
+        tm.input :description, as: :text, input_html: { rows: 3 }
+        tm.input :image, as: :file, hint: (tm.object.persisted? && tm.object.image.attached?) ? image_tag(tm.object.image, size: "100x100", class: "img-corner") : "No image uploaded"
+      end
       f.input :team_images, as: :file, input_html: { multiple: true }
 
       if f.object.persisted? && f.object.team_images.attached?
@@ -191,17 +195,23 @@ ActiveAdmin.register AboutUs do
                 tr do
                   th "Name"
                   th "Job Title"
-                  th "Image URL"
-                  th "Job Description"
+                  th "Photo"
+                  th "Description"
                 end
               end
               tbody do
-                about.team_members_list.each do |member|
+                about.team_members.each do |member|
                   tr do
-                    td { member["name"] }
-                    td { member["title"] }
-                    td { member["image_url"] }
-                    td { member["description"] }
+                    td { member.name }
+                    td { member.job_title }
+                    td {
+                      if member.image.attached?
+                        image_tag(member.image, size: "80x80", class: "img-corner")
+                      else
+                        span { "No image" }
+                      end
+                    }
+                    td { member.description }
                   end
                 end
               end
@@ -306,21 +316,6 @@ ActiveAdmin.register AboutUs do
 
     def update
       about_params = permitted_params[:about_us].to_h
-
-      # Handle team members as JSON
-      if params[:about_us][:team_members].present?
-        team_members = params[:about_us][:team_members].split("\n").map do |line|
-          parts = line.strip.split("|") 
-          next if parts.size < 2
-          {
-            "name" => parts[0].strip,
-            "title" => parts[1].strip,
-            "image_url" => parts.size > 2 ? parts[2].strip : nil,
-            "description" => parts.size > 3 ? parts[3].strip : nil
-          }
-        end.compact
-        about_params[:team_members] = team_members
-      end
 
       # Handle achievements as JSON
       if params[:about_us][:achievements].present?

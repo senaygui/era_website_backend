@@ -6,6 +6,9 @@ class Publication < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     [ "authors", "category", "citation_information", "created_at", "description", "download_count", "id", "is_new", "meta_description", "meta_keywords", "meta_title", "publish_date", "published_by", "status", "title", "updated_at", "updated_by", "year" ]
   end
+  def self.ransackable_associations(auth_object = nil)
+    ["file_attachment", "file_blob", "thumbnail_attachment", "thumbnail_blob"]
+  end
 
   # Validations
   validates :title, presence: true
@@ -25,6 +28,7 @@ class Publication < ApplicationRecord
 
   # Callbacks
   before_validation :set_year_from_publish_date
+  before_validation :normalize_authors
 
   # For Postgres array support (if not using Rails 5+ attributes API)
   # serialize :authors, Array
@@ -33,5 +37,26 @@ class Publication < ApplicationRecord
 
   def set_year_from_publish_date
     self.year = publish_date.year if publish_date.present?
+  end
+
+  # Ensure authors is always stored as an array of strings
+  def normalize_authors
+    value = self[:authors]
+    # Allow form submissions that pass authors as comma-separated string
+    if value.is_a?(String)
+      str = value.strip
+      # Try JSON parse first if it looks like a JSON array
+      if str.start_with?('[')
+        begin
+          parsed = JSON.parse(str)
+          value = parsed
+        rescue JSON::ParserError
+          value = str
+        end
+      end
+      value = value.split(',').map(&:strip) if value.is_a?(String)
+    end
+    value = Array(value).reject(&:blank?).map(&:to_s)
+    self[:authors] = value
   end
 end

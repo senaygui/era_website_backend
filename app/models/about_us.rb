@@ -9,8 +9,12 @@ class AboutUs < ApplicationRecord
   has_one_attached :org_structure_image
   has_many_attached :team_images
 
+  # Associations
+  has_many :team_members, dependent: :destroy
+  accepts_nested_attributes_for :team_members, allow_destroy: true
+
   def self.ransackable_associations(auth_object = nil)
-    [ "hero_image_attachment", "hero_image_blob", "history_image_attachment", "history_image_blob", "mission_image_attachment", "mission_image_blob", "org_structure_image_attachment", "org_structure_image_blob", "team_images_attachments", "team_images_blobs", "vision_image_attachment", "vision_image_blob" ]
+    [ "hero_image_attachment", "hero_image_blob", "history_image_attachment", "history_image_blob", "mission_image_attachment", "mission_image_blob", "org_structure_image_attachment", "org_structure_image_blob", "team_images_attachments", "team_images_blobs", "vision_image_attachment", "vision_image_blob", "team_members" ]
   end
 
   def self.ransackable_attributes(auth_object = nil)
@@ -33,25 +37,49 @@ class AboutUs < ApplicationRecord
   # Instance methods
   def achievements_list
     return [] if achievements.nil? || achievements.empty?
-    return JSON.parse(achievements) if achievements.is_a?(String)
+    if achievements.is_a?(String)
+      begin
+        return JSON.parse(achievements)
+      rescue JSON::ParserError
+        return []
+      end
+    end
     achievements
   end
 
   def milestones_list
     return [] if milestones.nil? || milestones.empty?
-    return JSON.parse(milestones) if milestones.is_a?(String)
+    if milestones.is_a?(String)
+      begin
+        return JSON.parse(milestones)
+      rescue JSON::ParserError
+        return []
+      end
+    end
     milestones
   end
 
   def partners_list
     return [] if partners.nil? || partners.empty?
-    return JSON.parse(partners) if partners.is_a?(String)
+    if partners.is_a?(String)
+      begin
+        return JSON.parse(partners)
+      rescue JSON::ParserError
+        return []
+      end
+    end
     partners
   end
 
   def team_members_list
     return [] if team_members.nil? || team_members.empty?
-    return JSON.parse(team_members) if team_members.is_a?(String)
+    if team_members.is_a?(String)
+      begin
+        return JSON.parse(team_members)
+      rescue JSON::ParserError
+        return []
+      end
+    end
     team_members
   end
   
