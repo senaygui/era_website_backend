@@ -46,6 +46,17 @@ module Api
       private
 
       def event_json(event, detailed: false)
+        # Safely build image URL
+        image_url = nil
+        if event.event_image.attached?
+          begin
+            image_url = Rails.application.routes.url_helpers.rails_blob_url(event.event_image, host: request.base_url)
+          rescue => e
+            Rails.logger.error("Failed to build image_url for event #{event.id}: #{e.class} - #{e.message}")
+            image_url = nil
+          end
+        end
+
         json = {
           id: event.id,
           title: event.title,
@@ -63,7 +74,7 @@ module Api
           status: event.status,
           is_featured: event.is_featured,
           is_published: event.is_published,
-          image_url: event.event_image.attached? ? Rails.application.routes.url_helpers.url_for(event.event_image) : nil,
+          image_url: image_url,
           slug: event.slug,
           meta_title: event.meta_title,
           meta_description: event.meta_description,
