@@ -210,7 +210,8 @@ ActiveAdmin.register Applicant do
     dropdown_menu "Change Status" do
       Applicant.statuses.keys.each do |status|
         next if resource.status == status
-        item status.humanize, admin_applicant_update_status_path(resource, status: status), method: :put
+        # Correct path helper for member_action :update_status
+        item status.humanize, update_status_admin_applicant_path(resource, status: status), method: :put
       end
     end
   end
