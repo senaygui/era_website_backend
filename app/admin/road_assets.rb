@@ -1,15 +1,15 @@
-ActiveAdmin.register Publication do
+ActiveAdmin.register RoadAsset do
   permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
 
+
   member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:publication])
+    resource.assign_attributes(permitted_params[:road_asset])
     if resource.save
-      redirect_to resource_path, notice: "Publication was successfully updated."
+      redirect_to resource_path, notice: "RoadAsset was successfully updated."
     else
       render :edit
     end
   end
-  # Ensure authors param is normalized for both create and update
   controller do
     def create
       normalize_authors_param
@@ -24,15 +24,16 @@ ActiveAdmin.register Publication do
     private
 
     def normalize_authors_param
-      a = params.dig(:publication, :authors)
+      a = params.dig(:road_asset, :authors)
       return if a.nil?
-      params[:publication][:authors] = if a.is_a?(String)
+      params[:road_asset][:authors] = if a.is_a?(String)
         a.split(',').map(&:strip).reject(&:blank?)
       else
         Array(a).reject(&:blank?)
       end
     end
   end
+
   # Filters
   filter :title
   filter :category
@@ -48,20 +49,20 @@ ActiveAdmin.register Publication do
     column :category
     column :year
     column :publish_date
-    column :authors do |pub|
-      pub.authors&.join(", ")
+    column :authors do |ra|
+      ra.authors&.join(", ")
     end
     column :is_new
     column :download_count
     column :status
-    column :file do |pub|
-      if pub.file.attached?
-        link_to "Download", url_for(pub.file), target: "_blank"
+    column :file do |ra|
+      if ra.file.attached?
+        link_to "Download", url_for(ra.file), target: "_blank"
       end
     end
-    column :thumbnail do |pub|
-      if pub.thumbnail.attached?
-        image_tag url_for(pub.thumbnail), height: 50
+    column :thumbnail do |ra|
+      if ra.thumbnail.attached?
+        image_tag url_for(ra.thumbnail), height: 50
       end
     end
     actions
@@ -73,8 +74,8 @@ ActiveAdmin.register Publication do
       row :category
       row :year
       row :publish_date
-      row :authors do |pub|
-        pub.authors&.join(", ")
+      row :authors do |ra|
+        ra.authors&.join(", ")
       end
       row :description
       row :is_new
@@ -84,14 +85,14 @@ ActiveAdmin.register Publication do
       row :status
       row :published_by
       row :updated_by
-      row :file do |pub|
-        if pub.file.attached?
-          link_to "Download", url_for(pub.file), target: "_blank"
+      row :file do |ra|
+        if ra.file.attached?
+          link_to "Download", url_for(ra.file), target: "_blank"
         end
       end
-      row :thumbnail do |pub|
-        if pub.thumbnail.attached?
-          image_tag url_for(pub.thumbnail), height: 100
+      row :thumbnail do |ra|
+        if ra.thumbnail.attached?
+          image_tag url_for(ra.thumbnail), height: 100
         end
       end
     end

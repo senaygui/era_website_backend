@@ -7,7 +7,7 @@ ActiveAdmin.register Vacancy do
   member_action :update, method: :post do
     resource.assign_attributes(permitted_params[:vacancy])
     if resource.save
-      redirect_to resource_path, notice: "News was successfully updated."
+      redirect_to resource_path, notice: "Vacancy was successfully updated."
     else
       render :edit
     end

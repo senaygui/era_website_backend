@@ -6,8 +6,19 @@ class Bid < ApplicationRecord
   
   # Scopes
   scope :published, -> { where(is_published: true) }
-  scope :active, -> { published.where(status: 'active') }
-  scope :closed, -> { published.where(status: 'closed') }
+  # Time-aware scopes: a bid is considered closed if its deadline_date has passed
+  scope :active, -> {
+    published.where(
+      "(deadline_date IS NULL OR deadline_date >= ?) AND (status IS NULL OR status = '' OR status = 'active')",
+      Date.current
+    )
+  }
+  scope :closed, -> {
+    published.where(
+      "(deadline_date IS NOT NULL AND deadline_date < ?) OR status = 'closed'",
+      Date.current
+    )
+  }
   scope :by_category, ->(category) { where(category: category) if category.present? }
   scope :by_type, ->(type) { where(type_of_bid: type) if type.present? }
   
@@ -33,5 +44,14 @@ class Bid < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     %w[documents_attachments]
+  end
+
+  # Computed helpers
+  def computed_status
+    if deadline_date.present? && deadline_date < Date.current
+      'closed'
+    else
+      status.presence || 'active'
+    end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_15_091100) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -237,6 +237,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_15_091100) do
     t.index ["slug"], name: "index_news_on_slug", unique: true
   end
 
+  create_table "performance_reports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.string "category", null: false
+    t.integer "year", null: false
+    t.datetime "publish_date", null: false
+    t.jsonb "authors", default: []
+    t.text "description"
+    t.integer "download_count", default: 0
+    t.boolean "is_new", default: true
+    t.string "meta_title"
+    t.text "meta_description"
+    t.string "citation_information"
+    t.jsonb "meta_keywords", default: []
+    t.string "status", default: "draft"
+    t.string "published_by"
+    t.string "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_performance_reports_on_category"
+    t.index ["publish_date"], name: "index_performance_reports_on_publish_date"
+    t.index ["status"], name: "index_performance_reports_on_status"
+    t.index ["year"], name: "index_performance_reports_on_year"
+  end
+
   create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "description", null: false
@@ -284,6 +308,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_15_091100) do
     t.index ["publish_date"], name: "index_publications_on_publish_date"
     t.index ["status"], name: "index_publications_on_status"
     t.index ["year"], name: "index_publications_on_year"
+  end
+
+  create_table "road_assets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.string "category", null: false
+    t.integer "year", null: false
+    t.datetime "publish_date", null: false
+    t.jsonb "authors", default: []
+    t.text "description"
+    t.integer "download_count", default: 0
+    t.boolean "is_new", default: true
+    t.string "meta_title"
+    t.text "meta_description"
+    t.string "citation_information"
+    t.jsonb "meta_keywords", default: []
+    t.string "status", default: "draft"
+    t.string "published_by"
+    t.string "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_road_assets_on_category"
+    t.index ["publish_date"], name: "index_road_assets_on_publish_date"
+    t.index ["status"], name: "index_road_assets_on_status"
+    t.index ["year"], name: "index_road_assets_on_year"
   end
 
   create_table "taggings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

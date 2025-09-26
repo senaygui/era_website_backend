@@ -4,7 +4,15 @@ ActiveAdmin.register Project do
                 :objectives, :scope, :milestones, :challenges,
                 :is_published, :meta_title, :meta_description, :meta_keywords,
                 images: [], documents: []
-
+   
+                member_action :update, method: :post do
+                  resource.assign_attributes(permitted_params[:project])
+                  if resource.save
+                    redirect_to resource_path, notice: "Project was successfully updated."
+                  else
+                    render :edit
+                  end
+                end
   index do
     selectable_column
     id_column

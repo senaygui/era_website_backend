@@ -67,6 +67,27 @@ Rails.application.routes.draw do
         end
       end
 
+      # Road Assets endpoints
+      resources :road_assets, only: [:index, :show] do
+        member do
+          get :download
+        end
+      end
+
+      # Performance Reports endpoints
+      resources :performance_reports, only: [:index, :show] do
+        member do
+          get :download
+        end
+      end
+
+      # Performance Rates alias endpoints (same controller)
+      resources :performance_rates, only: [:index, :show], controller: :performance_reports do
+        member do
+          get :download
+        end
+      end
+
       # Applicants endpoints
       resources :applicants
     end

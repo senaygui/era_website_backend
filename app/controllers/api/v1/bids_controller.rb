@@ -5,10 +5,17 @@ module Api
         Rails.logger.info "Processing bids index request"
         begin
           @bids = Bid.published.order(publish_date: :desc)
-          
-          # Filter by status if provided
+
+          # Filter by status if provided (time-aware)
           if params[:status].present?
-            @bids = @bids.where(status: params[:status])
+            case params[:status]
+            when 'active'
+              @bids = Bid.active.order(publish_date: :desc)
+            when 'closed'
+              @bids = Bid.closed.order(deadline_date: :desc)
+            else
+              @bids = @bids.where(status: params[:status])
+            end
           end
           
           # Filter by category if provided
@@ -80,7 +87,7 @@ module Api
           title: bid.title,
           category: bid.category,
           type: bid.type_of_bid,
-          status: bid.status,
+          status: bid.computed_status,
           publishDate: bid.publish_date,
           deadlineDate: bid.deadline_date,
           budget: bid.budget,
