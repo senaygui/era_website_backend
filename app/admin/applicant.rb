@@ -4,7 +4,7 @@ ActiveAdmin.register Applicant do
                 :current_employer, :current_position, :vacancy_id, :status,
                 :cover_letter_text, :notes, skills: [], cv: [], cover_letter: [], other_documents: []
 
-  menu priority: 4, label: "Applicants"
+  menu parent: "Vacancies", priority: 2, label: "Applicants"
 
   scope :all, default: true
   scope :applied, -> { where(status: "applied") }

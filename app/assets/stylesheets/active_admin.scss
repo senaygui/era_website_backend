@@ -553,75 +553,106 @@ body {
  }
  
  .section {
-   background: #fff !important;
-   border-radius: 0 !important;
-   box-shadow: none !important;
-   margin-bottom: 0 !important;
- }
+  background: #fff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+// header
+#wrapper #header {
+  height: 70px !important;
+  background-color: #f25b28 !important;
+  border-bottom: 1px solid #f25b28 !important;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+}
  
+ #wrapper #header ul.tabs {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0 auto;
+}
  
- // header
- #wrapper #header {
-   height: 70px !important;
-   background-color: #f25b28 !important;
-   border-bottom: 1px solid #f25b28 !important;
-   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
- }
+ #wrapper #header ul.tabs > li {
+  float: none !important;
+  display: inline-flex;
+}
  
- #header h1 {
-   padding: 3px 0px 0 15px;
- }
+ #wrapper #header ul.tabs > li > a {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Remove hardcoded left margin on tabs container to allow centering */
+#wrapper #header .header-item .tabs {
+  margin-left: 0 !important;
+}
  
  //title bar
  #wrapper #title_bar {
-   background-color: #e9e9e9;
-   border-bottom: 3px solid #e9e9e9;
- }
- 
- #wrapper #title_bar #titlebar_left h2 {
-   color: #5d5d5b;
- }
- 
+  background-color: #e9e9e9;
+  border-bottom: 3px solid #e9e9e9;
+  
+}
+
+#wrapper #title_bar #titlebar_left h2 {
+  color: #5d5d5b;
+}
+
  #title_bar h2 {
    font-size: 2em;
  }
  
  
  // banner
+ .outline {
+   background-color: #fff;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
+   padding: 1rem;
+ }
  .headline {
-  background-color: #fff;
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  width: 100%;
-  padding: 1rem;
- 
+   background-color: #fff;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
  }
  #site_title{
   display: none !important;
- }
- 
- .banner-logo {
- 
-   background-image: url(asset_path('era-logo.png'));
-   background-position: center;
-   background-size: contain;
-   width: 70px;
-   height: 70px;
-   margin-top: 10px;
-   margin-bottom: 5px;
- 
- }
+}
+
+.banner-logo {
+  
+  background-image: url(asset_path('era-logo-main.png'));
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 247px;
+  height: 70px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
  
  .banner-title {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-size: 2em !important;
-   line-height: 1;
-   margin: 0px;
-   font-weight: bold;
- }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em !important;
+  line-height: 1;
+  margin: 0px;
+  font-weight: bold;
+}
  
  // scope
  

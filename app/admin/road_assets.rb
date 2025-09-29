@@ -1,4 +1,5 @@
 ActiveAdmin.register RoadAsset do
+  menu parent: "Resources", priority: 1
   permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
 
 

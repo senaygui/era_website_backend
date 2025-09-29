@@ -1,4 +1,5 @@
 ActiveAdmin.register Event do
+   menu parent: "Events & News", priority: 1
   # Permit parameters
   permit_params :event_image, :title, :description, :excerpt, :location,
                 :start_date, :end_date, :time, :event_type, :agenda, :speakers,

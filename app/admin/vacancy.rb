@@ -3,7 +3,7 @@ ActiveAdmin.register Vacancy do
                 :description, :salary, :is_published, :position,
                 requirements: [], responsibilities: [], benefits: []
 
-  menu priority: 3, label: "Vacancies"
+  menu parent: "Vacancies", priority: 1, label: "Vacancies"
   member_action :update, method: :post do
     resource.assign_attributes(permitted_params[:vacancy])
     if resource.save

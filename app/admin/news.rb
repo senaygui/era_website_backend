@@ -1,4 +1,6 @@
 ActiveAdmin.register News do
+
+  menu parent: "Events & News", priority: 1
   permit_params :title, :content, :excerpt, :published_date, :is_published,
                 :category, :is_featured, :author, :meta_title, :meta_description,
                 :image, tags: [], meta_keywords: []
