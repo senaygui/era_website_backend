@@ -5,6 +5,11 @@ module Api
         Rails.logger.info "Processing projects index request"
         begin
           @projects = Project.published.order(created_at: :desc)
+
+          # Filter by Road Research Center related projects if requested
+          if ActiveModel::Type::Boolean.new.cast(params[:rrc])
+            @projects = @projects.where(is_road_research_center_project: true)
+          end
           
           # Filter by status if provided
           if params[:status].present?

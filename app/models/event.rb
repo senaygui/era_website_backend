@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   # ActiveStorage
   has_one_attached :event_image
 
+  # RRC flag is stored as a boolean on events (no FK association)
+
   # Validations
   validates :title, presence: true
   validates :slug, presence: true, uniqueness: true
@@ -13,7 +15,7 @@ class Event < ApplicationRecord
   validate :image_content_type
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "agenda", "capacity", "created_at", "description", "end_date", "event_type", "excerpt", "id", "is_featured", "is_published", "location", "meta_description", "meta_keywords", "meta_title", "registration_required", "slug", "speakers", "start_date", "status", "time", "title", "updated_at" ]
+    [ "agenda", "capacity", "created_at", "description", "end_date", "event_type", "excerpt", "id", "is_featured", "is_published", "is_road_research_center_event", "location", "meta_description", "meta_keywords", "meta_title", "registration_required", "slug", "speakers", "start_date", "status", "time", "title", "updated_at" ]
   end
 
   # Callbacks

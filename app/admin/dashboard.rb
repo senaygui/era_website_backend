@@ -16,6 +16,7 @@ ActiveAdmin.register_page "Dashboard" do
     projects_cnt = Project.count
     road_assets  = RoadAsset.count
     perf_reports = PerformanceReport.count
+    applicants_cnt = Applicant.count
 
     # Aggregations
     bids_by_category = Bid.group(:category).count.compact
@@ -113,6 +114,14 @@ ActiveAdmin.register_page "Dashboard" do
           span '💼', class: 'icon'
           span class: 'meta' do
             text_node link_to('View Vacancies', admin_vacancies_path)
+          end
+        end
+        li class: 'aa-stat aa-indigo' do
+          span 'Applicants', class: 'label'
+          span number_with_delimiter(applicants_cnt), class: 'value'
+          span '👤', class: 'icon'
+          span class: 'meta' do
+            text_node link_to('View Applicants', admin_applicants_path)
           end
         end
         li class: 'aa-stat aa-purple' do
@@ -304,6 +313,16 @@ ActiveAdmin.register_page "Dashboard" do
             column('State') { |v| status_tag(v.active? ? 'active' : 'expired') }
           end
           div { link_to 'View All Vacancies', admin_vacancies_path }
+        end
+
+        panel 'Latest Applicants' do
+          table_for Applicant.order(created_at: :desc).limit(5) do
+            column(:full_name) { |a| link_to a.full_name, admin_applicant_path(a) }
+            column(:vacancy) { |a| link_to a.vacancy.title, admin_vacancy_path(a.vacancy) }
+            column(:status) { |a| status_tag(a.status) }
+            column(:created_at)
+          end
+          div { link_to 'View All Applicants', admin_applicants_path }
         end
 
         panel 'Latest Projects' do

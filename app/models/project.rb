@@ -2,6 +2,8 @@ class Project < ApplicationRecord
   has_many_attached :images
   has_many_attached :documents
   
+  # RRC flag is stored as a boolean on projects (no FK association)
+  
   validates :title, presence: true
   validates :description, presence: true
   validate :validate_image_type
@@ -50,7 +52,7 @@ class Project < ApplicationRecord
   end
   
   def self.ransackable_attributes(auth_object = nil)
-    %w[title description status location contractor project_manager created_at updated_at is_published budget start_date end_date]
+    %w[title description status location contractor project_manager created_at updated_at is_published budget start_date end_date is_road_research_center_project]
   end
 
   def self.ransackable_associations(auth_object = nil)

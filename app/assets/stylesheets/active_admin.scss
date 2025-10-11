@@ -51,6 +51,8 @@ body {
 // Table tools and buttons
 .table_tools_segmented_control li a {
   background: #e45527 !important;
+  color: #fff !important;
+  font-weight: bold !important;
 }
 
 .table_tools_button {
@@ -566,25 +568,13 @@ body {
   border-bottom: 1px solid #f25b28 !important;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
 }
- 
- #wrapper #header ul.tabs {
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
+
+
+#header #tabs {
   width: 100%;
-  margin: 0 auto;
+  padding-left: 240px;
 }
- 
- #wrapper #header ul.tabs > li {
-  float: none !important;
-  display: inline-flex;
-}
- 
- #wrapper #header ul.tabs > li > a {
-  display: inline-flex;
-  align-items: center;
-}
+
 
 /* Remove hardcoded left margin on tabs container to allow centering */
 #wrapper #header .header-item .tabs {

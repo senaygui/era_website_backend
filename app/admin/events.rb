@@ -3,7 +3,7 @@ ActiveAdmin.register Event do
   # Permit parameters
   permit_params :event_image, :title, :description, :excerpt, :location,
                 :start_date, :end_date, :time, :event_type, :agenda, :speakers,
-                :capacity, :registration_required, :status,
+                :capacity, :registration_required, :status, :is_road_research_center_event,
                 :is_featured, :is_published, :meta_title, :meta_description,
                 :meta_keywords
 
@@ -27,6 +27,7 @@ ActiveAdmin.register Event do
     column :title
     column :event_type, as: :string
     column :location
+    column :is_road_research_center_event
     column :start_date
     column :end_date
     column :status
@@ -39,6 +40,7 @@ ActiveAdmin.register Event do
   filter :title
   filter :event_type
   filter :location
+  filter :is_road_research_center_event
   filter :start_date
   filter :end_date
   filter :status
@@ -84,6 +86,7 @@ ActiveAdmin.register Event do
     f.inputs "Settings" do
       f.input :is_featured
       f.input :is_published
+      f.input :is_road_research_center_event, label: "Road Research Center related"
     end
 
     f.inputs "SEO Information" do
@@ -114,6 +117,7 @@ ActiveAdmin.register Event do
       row :end_date
       row :time
       row :event_type
+      row :is_road_research_center_event
       row :status
       row :capacity
       row :registration_required

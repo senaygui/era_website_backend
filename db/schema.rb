@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -205,9 +205,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
     t.string "meta_keywords"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_road_research_center", default: false
+    t.boolean "is_road_research_center_event", default: false
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["is_featured"], name: "index_events_on_is_featured"
     t.index ["is_published"], name: "index_events_on_is_published"
+    t.index ["is_road_research_center"], name: "index_events_on_is_road_research_center"
+    t.index ["is_road_research_center_event"], name: "index_events_on_is_road_research_center_event"
     t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["start_date"], name: "index_events_on_start_date"
     t.index ["status"], name: "index_events_on_status"
@@ -281,6 +285,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
     t.string "meta_keywords"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_road_research_center", default: false
+    t.boolean "is_road_research_center_project", default: false
+    t.index ["is_road_research_center"], name: "index_projects_on_is_road_research_center"
+    t.index ["is_road_research_center_project"], name: "index_projects_on_is_road_research_center_project"
     t.index ["location"], name: "index_projects_on_location"
     t.index ["status"], name: "index_projects_on_status"
     t.index ["title"], name: "index_projects_on_title"
@@ -332,6 +340,47 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
     t.index ["publish_date"], name: "index_road_assets_on_publish_date"
     t.index ["status"], name: "index_road_assets_on_status"
     t.index ["year"], name: "index_road_assets_on_year"
+  end
+
+  create_table "road_research_centers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.text "about", null: false
+    t.boolean "is_published", default: true
+    t.string "meta_title"
+    t.text "meta_description"
+    t.string "meta_keywords"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "singleton_key", default: 1, null: false
+    t.index ["is_published"], name: "index_road_research_centers_on_is_published"
+    t.index ["singleton_key"], name: "idx_rrc_singleton", unique: true
+    t.index ["title"], name: "index_road_research_centers_on_title"
+  end
+
+  create_table "road_research_laboratory_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "road_research_center_id", null: false
+    t.string "title", null: false
+    t.string "category"
+    t.text "description"
+    t.boolean "is_published", default: true
+    t.string "status", default: "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["road_research_center_id"], name: "idx_rr_lab_center"
+    t.index ["title"], name: "index_road_research_laboratory_services_on_title"
+  end
+
+  create_table "road_research_technologies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "road_research_center_id", null: false
+    t.string "title", null: false
+    t.string "category"
+    t.text "description"
+    t.boolean "is_published", default: true
+    t.string "status", default: "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["road_research_center_id"], name: "index_road_research_technologies_on_road_research_center_id"
+    t.index ["title"], name: "index_road_research_technologies_on_title"
   end
 
   create_table "taggings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -403,6 +452,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_055221) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "applicants", "vacancies", on_delete: :cascade
+  add_foreign_key "road_research_laboratory_services", "road_research_centers"
+  add_foreign_key "road_research_technologies", "road_research_centers"
   add_foreign_key "taggings", "tags"
   add_foreign_key "team_members", "about_us"
 end

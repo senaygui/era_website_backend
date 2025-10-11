@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+  # Fallback to allow POST update for RoadResearchCenter in admin when method override isn't applied
+  post "/admin/road_research_centers/:id", to: "admin/road_research_centers#update"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -61,28 +63,35 @@ Rails.application.routes.draw do
       get "about", to: "about#index"
 
       # Publications endpoints
-      resources :publications, only: [:index, :show] do
+      resources :publications, only: [ :index, :show ] do
         member do
           get :download
         end
       end
 
       # Road Assets endpoints
-      resources :road_assets, only: [:index, :show] do
+      resources :road_assets, only: [ :index, :show ] do
+        member do
+          get :download
+        end
+      end
+
+      # Road Research Centers endpoints
+      resources :road_research_centers, only: [ :index, :show ] do
         member do
           get :download
         end
       end
 
       # Performance Reports endpoints
-      resources :performance_reports, only: [:index, :show] do
+      resources :performance_reports, only: [ :index, :show ] do
         member do
           get :download
         end
       end
 
       # Performance Rates alias endpoints (same controller)
-      resources :performance_rates, only: [:index, :show], controller: :performance_reports do
+      resources :performance_rates, only: [ :index, :show ], controller: :performance_reports do
         member do
           get :download
         end

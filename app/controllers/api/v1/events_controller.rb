@@ -2,11 +2,23 @@ module Api
   module V1
     class EventsController < ApplicationController
       def index
-        @events = Event.published
-                      .includes(event_image_attachment: :blob)
-                      .order(start_date: :asc)
-                      .page(params[:page])
-                      .per(params[:per_page] || 6)
+        scope = Event.published
+        # Filter by Road Research Center related events if requested
+        if ActiveModel::Type::Boolean.new.cast(params[:rrc])
+          scope = scope.where(is_road_research_center_event: true)
+        end
+
+        # Optional filter by event_type. Accepts CSV values.
+        if params[:event_type].present?
+          types = params[:event_type].to_s.split(',').map(&:strip)
+          scope = scope.where(event_type: types)
+        end
+
+        @events = scope
+                  .includes(event_image_attachment: :blob)
+                  .order(start_date: :asc)
+                  .page(params[:page])
+                  .per(params[:per_page] || 6)
 
         render json: {
           events: @events.map { |event| event_json(event) },
