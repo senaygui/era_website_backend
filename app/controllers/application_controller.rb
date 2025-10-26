@@ -11,4 +11,9 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ActionController::RoutingError, with: :render_404
+  rescue_from CanCan::AccessDenied, with: :access_denied
+
+  def access_denied(exception)
+    redirect_to admin_root_path, alert: exception.message
+  end
 end

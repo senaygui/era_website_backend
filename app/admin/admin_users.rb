@@ -41,7 +41,7 @@ ActiveAdmin.register AdminUser do
       f.input :email
       f.input :password
       f.input :password_confirmation
-      f.input :role, as: :select, collection: %w[Admin author publisher]
+      f.input :role, as: :select, collection: %w[admin author publisher hr purchaser]
       f.input :photo, as: :file
     end
     f.actions

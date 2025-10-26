@@ -1,4 +1,5 @@
 //= require jquery
+//= require rails-ujs
 //= require active_admin/base
 //= require activeadmin_addons/all
 //= require activestorage
@@ -124,6 +125,63 @@ function bootCharts() {
 
 // DOM behaviors and chart bootstrapping
 $(document).ready(function () {
+  // Ensure method links work with Turbo by mapping data-method -> data-turbo-method
+  try {
+    function mapMethodLinks() {
+      $('a[data-method]').each(function(){
+        var $el = $(this);
+        var m = $el.attr('data-method');
+        if (m) { $el.attr('data-turbo-method', m); }
+        var c = $el.attr('data-confirm');
+        if (c) { $el.attr('data-turbo-confirm', c); }
+      });
+    }
+    mapMethodLinks();
+    document.addEventListener('turbo:load', mapMethodLinks);
+    document.addEventListener('turbolinks:load', mapMethodLinks);
+  } catch (e) {}
+
+  // Polyfill: if neither rails-ujs nor Turbo handles data-method, submit a form with _method
+  try {
+    var hasRailsUJS = !!(window.Rails && window.Rails.ajax);
+    var hasTurbo = !!window.Turbo;
+    if (!hasRailsUJS && !hasTurbo) {
+      $(document).on('click', 'a[data-method]', function (e) {
+        var $link = $(this);
+        var method = ($link.attr('data-method') || '').toUpperCase();
+        if (!method) return;
+        var confirmMsg = $link.attr('data-confirm');
+        if (confirmMsg && !window.confirm(confirmMsg)) {
+          e.preventDefault();
+          return false;
+        }
+        e.preventDefault();
+        var action = $link.attr('href');
+        if (!action) return false;
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = action;
+        // CSRF token
+        var token = document.querySelector('meta[name="csrf-token"]');
+        if (token && token.content) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'authenticity_token';
+          input.value = token.content;
+          form.appendChild(input);
+        }
+        // Method override
+        var m = document.createElement('input');
+        m.type = 'hidden';
+        m.name = '_method';
+        m.value = method;
+        form.appendChild(m);
+        document.body.appendChild(form);
+        form.submit();
+        return false;
+      });
+    }
+  } catch (e) {}
   // Add header banner
   if ($('#header').length) {
     $('#header').before("<div class='outline'><div class='banner-logo'></div> <h1 class='banner-title'></h1></div>");

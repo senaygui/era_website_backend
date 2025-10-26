@@ -1,18 +1,6 @@
 ActiveAdmin.register District do
   permit_params :main_image, :meta_description, :meta_title, :district_overview, :detail_description, :is_published, :name, :address, :published_by, :updated_by, :map_embed, phone_numbers: [], emails: [], social_media_links: [], meta_keywords: [], gallery_images: []
 
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:district])
-    resource.phone_numbers = params[:district][:phone_numbers].split("\n").map(&:strip)
-    resource.emails = params[:district][:emails].split("\n").map(&:strip)
-    resource.social_media_links = params[:district][:social_media_links].split("\n").map(&:strip)
-    resource.meta_keywords = params[:district][:meta_keywords].split("\n").map(&:strip)
-    if resource.save
-      redirect_to resource_path, notice: "District was successfully updated."
-    else
-      render :edit
-    end
-  end
 
   index do
     selectable_column
