@@ -106,7 +106,7 @@ ActiveAdmin.register RoadAsset do
       f.input :title
       f.input :category
       f.input :publish_date, as: :datetime_picker
-      f.input :authors, as: :tags, collection: f.object.authors || []
+      f.input :authors, as: :select, multiple: true, collection: AdminUser.all.map { |u| [u.full_name, u.full_name] }
       f.input :description
       f.input :is_new
       f.input :meta_title
