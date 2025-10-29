@@ -1,6 +1,6 @@
 class RoadAsset < ApplicationRecord
   # ActiveStorage attachments
-  has_one_attached :file
+  has_many_attached :documents
   has_one_attached :thumbnail
 
   def self.ransackable_attributes(auth_object = nil)

@@ -1,6 +1,6 @@
 ActiveAdmin.register RoadAsset do
   menu parent: "Resources", priority: 1
-  permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
+  permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: [], documents: []
 
   controller do
     def create
@@ -19,7 +19,7 @@ ActiveAdmin.register RoadAsset do
       a = params.dig(:road_asset, :authors)
       return if a.nil?
       params[:road_asset][:authors] = if a.is_a?(String)
-        a.split(',').map(&:strip).reject(&:blank?)
+        a.split(",").map(&:strip).reject(&:blank?)
       else
         Array(a).reject(&:blank?)
       end
@@ -77,9 +77,16 @@ ActiveAdmin.register RoadAsset do
       row :status
       row :published_by
       row :updated_by
-      row :file do |ra|
-        if ra.file.attached?
-          link_to "Download", url_for(ra.file), target: "_blank"
+      row :documents do |project|
+        if project.documents.attached?
+          ul do
+            project.documents.each do |doc|
+              li do
+                span doc.filename.to_s
+                span link_to "Download", url_for(doc), target: "_blank"
+              end
+            end
+          end
         end
       end
       row :thumbnail do |ra|
@@ -97,7 +104,7 @@ ActiveAdmin.register RoadAsset do
       f.input :title
       f.input :category
       f.input :publish_date, as: :datetime_picker
-      f.input :authors, as: :select, multiple: true, collection: AdminUser.all.map { |u| [u.full_name, u.full_name] }
+      f.input :authors, as: :select, multiple: true, collection: AdminUser.all.map { |u| [ u.full_name, u.full_name ] }
       f.input :description
       f.input :is_new
       f.input :meta_title
@@ -105,7 +112,7 @@ ActiveAdmin.register RoadAsset do
       f.input :status, as: :select, collection: %w[draft published archived]
       f.input :published_by
       f.input :updated_by
-      f.input :file, as: :file, hint: (f.object.file.attached? ? link_to("Download", url_for(f.object.file), target: "_blank") : nil)
+      f.input :documents, as: :file, input_html: { multiple: true }
       f.input :thumbnail, as: :file, hint: (f.object.thumbnail.attached? ? image_tag(url_for(f.object.thumbnail), height: 100) : nil)
     end
     f.actions
