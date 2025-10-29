@@ -5,15 +5,6 @@ ActiveAdmin.register Bid do
                 :contact_phone, :award_status, :awarded_to, :award_date,
                 :contract_value, :is_published, documents: []
 
-  
-                member_action :update, method: :post do
-                  resource.assign_attributes(permitted_params[:bid])
-                  if resource.save
-                    redirect_to resource_path, notice: "Bid was successfully updated."
-                  else
-                    render :edit
-                  end
-                end
   index do
     selectable_column
     id_column

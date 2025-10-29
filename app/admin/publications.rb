@@ -2,14 +2,6 @@ ActiveAdmin.register Publication do
   menu parent: "Resources", priority: 1
   permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
 
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:publication])
-    if resource.save
-      redirect_to resource_path, notice: "Publication was successfully updated."
-    else
-      render :edit
-    end
-  end
   # Ensure authors param is normalized for both create and update
   controller do
     def create

@@ -3,6 +3,22 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   # Fallback to allow POST update for RoadResearchCenter in admin when method override isn't applied
   post "/admin/road_research_centers/:id", to: "admin/road_research_centers#update"
+  # Fallback to allow POST destroy for Bids in admin when method override isn't applied
+  post "/admin/bids/:id", to: "admin/bids#destroy"
+  # Fallback to allow POST destroy for Performance Reports in admin when method override isn't applied
+  post "/admin/performance_reports/:id", to: "admin/performance_reports#destroy"
+  # Fallback to allow POST destroy for other admin resources when method override isn't applied
+  post "/admin/publications/:id", to: "admin/publications#destroy"
+  post "/admin/road_assets/:id", to: "admin/road_assets#destroy"
+  post "/admin/events/:id", to: "admin/events#destroy"
+  post "/admin/news/:id", to: "admin/news#destroy"
+  post "/admin/projects/:id", to: "admin/projects#destroy"
+  post "/admin/vacancies/:id", to: "admin/vacancies#destroy"
+  post "/admin/applicants/:id", to: "admin/applicants#destroy"
+  post "/admin/districts/:id", to: "admin/districts#destroy"
+  post "/admin/road_research_centers/:id/destroy", to: "admin/road_research_centers#destroy"
+  post "/admin/about_us/:id", to: "admin/about_us#destroy"
+  post "/admin/admin_users/:id", to: "admin/admin_users#destroy"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

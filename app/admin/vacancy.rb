@@ -4,14 +4,6 @@ ActiveAdmin.register Vacancy do
                 requirements: [], responsibilities: [], benefits: []
 
   menu parent: "Vacancies", priority: 1, label: "Vacancies"
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:vacancy])
-    if resource.save
-      redirect_to resource_path, notice: "Vacancy was successfully updated."
-    else
-      render :edit
-    end
-  end
   index do
     selectable_column
     column :title
@@ -91,9 +83,11 @@ ActiveAdmin.register Vacancy do
     private
 
     def process_arrays
+      v = params[:vacancy]
+      return unless v.is_a?(ActionController::Parameters) || v.is_a?(Hash)
       %i[requirements responsibilities benefits].each do |field|
-        next unless params[:vacancy][field].is_a?(String)
-        params[:vacancy][field] = params[:vacancy][field].split("\n").map(&:strip).reject(&:blank?)
+        next unless v[field].is_a?(String)
+        v[field] = v[field].split("\n").map(&:strip).reject(&:blank?)
       end
     end
   end

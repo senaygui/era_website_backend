@@ -11,15 +11,6 @@ ActiveAdmin.register AboutUs do
                 team_images: [],
                 team_members_attributes: [ :id, :name, :position, :job_title, :description, :image, :_destroy ]
 
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:about_us])
-    if resource.save
-      redirect_to resource_path, notice: "About Us was successfully updated."
-    else
-      render :edit
-    end
-  end
-
   # Index page configuration
   index do
     column :title

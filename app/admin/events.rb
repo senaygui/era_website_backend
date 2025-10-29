@@ -11,14 +11,6 @@ ActiveAdmin.register Event do
   config.sort_order = "created_at_desc"
   config.filters = true
   config.per_page = 20
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:event])
-    if resource.save
-      redirect_to resource_path, notice: "Event was successfully updated."
-    else
-      render :edit
-    end
-  end
 
   # Index page configuration
   index do

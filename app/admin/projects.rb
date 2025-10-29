@@ -5,14 +5,6 @@ ActiveAdmin.register Project do
                 :is_published, :is_road_research_center_project, :meta_title, :meta_description, :meta_keywords,
                 images: [], documents: []
 
-                member_action :update, method: :post do
-                  resource.assign_attributes(permitted_params[:project])
-                  if resource.save
-                    redirect_to resource_path, notice: "Project was successfully updated."
-                  else
-                    render :edit
-                  end
-                end
   index do
     selectable_column
     id_column

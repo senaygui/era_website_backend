@@ -5,15 +5,6 @@ ActiveAdmin.register Applicant do
                 :cover_letter_text, :notes, skills: [], cv: [], cover_letter: [], other_documents: []
 
   menu parent: "Vacancies", priority: 2, label: "Applicants"
-
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:applicant])
-    if resource.save
-      redirect_to resource_path, notice: "Applicant was successfully updated."
-    else
-      render :edit
-    end
-  end
   scope :all, default: true
   scope :applied, -> { where(status: "applied") }
   scope :under_review, -> { where(status: "under_review") }

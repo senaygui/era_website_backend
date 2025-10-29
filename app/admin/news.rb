@@ -5,15 +5,7 @@ ActiveAdmin.register News do
                 :category, :is_featured, :author, :meta_title, :meta_description,
                 :image, tags: [], meta_keywords: []
 
-  # Add member action to handle POST requests for updates
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:news])
-    if resource.save
-      redirect_to resource_path, notice: "News was successfully updated."
-    else
-      render :edit
-    end
-  end
+  # Rely on default update action
 
   index do
     selectable_column

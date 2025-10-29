@@ -2,15 +2,6 @@ ActiveAdmin.register RoadAsset do
   menu parent: "Resources", priority: 1
   permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: []
 
-
-  member_action :update, method: :post do
-    resource.assign_attributes(permitted_params[:road_asset])
-    if resource.save
-      redirect_to resource_path, notice: "RoadAsset was successfully updated."
-    else
-      render :edit
-    end
-  end
   controller do
     def create
       normalize_authors_param
