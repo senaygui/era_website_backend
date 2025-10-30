@@ -1,13 +1,16 @@
+  # def require_documents_on_create
+  #   errors.add(:documents, "can't be blank") unless documents.attached?
+  # end
 class Publication < ApplicationRecord
   # ActiveStorage attachments
-  has_one_attached :file
+  has_many_attached :documents
   has_one_attached :thumbnail
 
   def self.ransackable_attributes(auth_object = nil)
     [ "authors", "category", "citation_information", "created_at", "description", "download_count", "id", "is_new", "meta_description", "meta_keywords", "meta_title", "publish_date", "published_by", "status", "title", "updated_at", "updated_by", "year" ]
   end
   def self.ransackable_associations(auth_object = nil)
-    ["file_attachment", "file_blob", "thumbnail_attachment", "thumbnail_blob"]
+    ["documents_attachments", "documents_blobs", "thumbnail_attachment", "thumbnail_blob"]
   end
 
   # Validations
@@ -16,7 +19,7 @@ class Publication < ApplicationRecord
   validates :year, presence: true, numericality: { only_integer: true }
   validates :publish_date, presence: true
   validates :status, inclusion: { in: %w[draft published archived] }
-  validates :file, presence: true
+  # validate :require_documents_on_create, on: :create
 
   # Scopes
   scope :published, -> { where(status: "published") }

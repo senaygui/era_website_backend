@@ -23,12 +23,11 @@ module Api
       # GET /api/v1/road_assets/:id/download
       def download
         asset = RoadAsset.published.find(params[:id])
-        unless asset.file.attached?
-          return render json: { error: "File not available" }, status: :not_found
-        end
+        doc = asset.documents.attached? ? asset.documents.first : nil
+        return render json: { error: "File not available" }, status: :not_found unless doc
 
         RoadAsset.increment_counter(:download_count, asset.id)
-        redirect_to url_for(asset.file)
+        redirect_to url_for(doc)
       end
 
       private
@@ -44,25 +43,20 @@ module Api
           downloadCount: p.download_count,
           isNew: p.is_new,
           authors: p.authors,
-          fileType: file_type_for(p),
-          fileSize: file_size_for(p),
-          file_url: p.file.attached? ? url_for(p.file) : nil,
+          documents: p.documents.map { |d| serialize_blob(d) },
           thumbnail: p.thumbnail.attached? ? url_for(p.thumbnail) : nil
         }
       end
 
-      def file_type_for(p)
-        return nil unless p.file.attached?
-        if p.file.blob.content_type.present?
-          p.file.blob.content_type.split("/").last
-        else
-          File.extname(p.file.filename.to_s).delete(".")
-        end
-      end
-
-      def file_size_for(p)
-        return nil unless p.file.attached?
-        number_to_human_size(p.file.blob.byte_size)
+      def serialize_blob(att)
+        b = att.blob
+        {
+          id: att.id,
+          filename: b.filename.to_s,
+          content_type: b.content_type,
+          byte_size: b.byte_size,
+          url: url_for(att)
+        }
       end
     end
   end

@@ -13,7 +13,7 @@ class RoadAsset < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["file_attachment", "file_blob", "thumbnail_attachment", "thumbnail_blob"]
+    ["documents_attachments", "documents_blobs", "thumbnail_attachment", "thumbnail_blob"]
   end
 
   # Validations
@@ -22,7 +22,6 @@ class RoadAsset < ApplicationRecord
   validates :year, presence: true, numericality: { only_integer: true }
   validates :publish_date, presence: true
   validates :status, inclusion: { in: %w[draft published archived] }
-  validates :file, presence: true
 
   # Scopes
   scope :published, -> { where(status: "published") }

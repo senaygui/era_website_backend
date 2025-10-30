@@ -1,6 +1,6 @@
 class PerformanceReport < ApplicationRecord
   # ActiveStorage attachments
-  has_one_attached :file
+  has_many_attached :documents
   has_one_attached :thumbnail
 
   def self.ransackable_attributes(auth_object = nil)
@@ -13,7 +13,7 @@ class PerformanceReport < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["file_attachment", "file_blob", "thumbnail_attachment", "thumbnail_blob"]
+    ["documents_attachments", "documents_blobs", "thumbnail_attachment", "thumbnail_blob"]
   end
 
   # Validations
@@ -22,7 +22,7 @@ class PerformanceReport < ApplicationRecord
   validates :year, presence: true, numericality: { only_integer: true }
   validates :publish_date, presence: true
   validates :status, inclusion: { in: %w[draft published archived] }
-  validates :file, presence: true
+  # Do not enforce presence validation on documents; attachments are managed in admin controller
 
   # Scopes
   scope :published, -> { where(status: "published") }

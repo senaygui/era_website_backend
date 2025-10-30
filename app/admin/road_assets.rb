@@ -1,16 +1,26 @@
 ActiveAdmin.register RoadAsset do
   menu parent: "Resources", priority: 1
-  permit_params :thumbnail, :title, :file, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: [], documents: []
+  permit_params :thumbnail, :title, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: [], documents: []
 
   controller do
     def create
       normalize_authors_param
-      super
+      docs = params[:road_asset].delete(:documents)
+      super do |success, _failure|
+        if success && docs.present?
+          Array(docs).each { |io| resource.documents.attach(io) }
+        end
+      end
     end
 
     def update
       normalize_authors_param
-      super
+      docs = params[:road_asset].delete(:documents)
+      super do |success, _failure|
+        if success && docs.present?
+          Array(docs).each { |io| resource.documents.attach(io) }
+        end
+      end
     end
 
     private
@@ -23,6 +33,16 @@ ActiveAdmin.register RoadAsset do
       else
         Array(a).reject(&:blank?)
       end
+    end
+  end
+
+  member_action :remove_document, method: :post do
+    att = resource.documents.attachments.find_by(id: params[:attachment_id])
+    if att
+      att.purge
+      redirect_to resource_path, notice: "Document removed successfully."
+    else
+      redirect_to resource_path, alert: "Document not found."
     end
   end
 
@@ -47,11 +67,6 @@ ActiveAdmin.register RoadAsset do
     column :is_new
     column :download_count
     column :status
-    column :file do |ra|
-      if ra.file.attached?
-        link_to "Download", url_for(ra.file), target: "_blank"
-      end
-    end
     column :thumbnail do |ra|
       if ra.thumbnail.attached?
         image_tag url_for(ra.thumbnail), height: 50
@@ -83,7 +98,10 @@ ActiveAdmin.register RoadAsset do
             project.documents.each do |doc|
               li do
                 span doc.filename.to_s
-                span link_to "Download", url_for(doc), target: "_blank"
+                span " "
+                span link_to("Download", url_for(doc), target: "_blank")
+                span " "
+                span link_to("Delete", remove_document_admin_road_asset_path(project, attachment_id: doc.id), method: :post, data: { confirm: "Delete this document?" })
               end
             end
           end

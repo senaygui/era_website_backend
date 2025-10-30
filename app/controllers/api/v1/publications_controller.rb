@@ -21,16 +21,15 @@ module Api
       end
 
       # GET /api/v1/publications/:id/download
-      # Increments download_count and redirects to the file URL
+      # Increments download_count and redirects to the first document URL
       def download
         publication = Publication.published.find(params[:id])
-        unless publication.file.attached?
-          return render json: { error: "File not available" }, status: :not_found
-        end
+        doc = publication.documents.attached? ? publication.documents.first : nil
+        return render json: { error: "File not available" }, status: :not_found unless doc
 
         # Atomic counter increment
         Publication.increment_counter(:download_count, publication.id)
-        redirect_to url_for(publication.file)
+        redirect_to url_for(doc)
       end
 
       private
@@ -46,25 +45,20 @@ module Api
           downloadCount: p.download_count,
           isNew: p.is_new,
           authors: p.authors,
-          fileType: file_type_for(p),
-          fileSize: file_size_for(p),
-          file_url: p.file.attached? ? url_for(p.file) : nil,
+          documents: p.documents.map { |d| serialize_blob(d) },
           thumbnail: p.thumbnail.attached? ? url_for(p.thumbnail) : nil
         }
       end
 
-      def file_type_for(p)
-        return nil unless p.file.attached?
-        if p.file.blob.content_type.present?
-          p.file.blob.content_type.split("/").last
-        else
-          File.extname(p.file.filename.to_s).delete(".")
-        end
-      end
-
-      def file_size_for(p)
-        return nil unless p.file.attached?
-        number_to_human_size(p.file.blob.byte_size)
+      def serialize_blob(att)
+        b = att.blob
+        {
+          id: att.id,
+          filename: b.filename.to_s,
+          content_type: b.content_type,
+          byte_size: b.byte_size,
+          url: url_for(att)
+        }
       end
     end
   end
