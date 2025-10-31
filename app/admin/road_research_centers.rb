@@ -1,11 +1,11 @@
 ActiveAdmin.register RoadResearchCenter do
   menu parent: "Resources", label: "Road Research Center"
-  actions :all, except: [:destroy, :new]
+  actions :all, except: [ :destroy, :new ]
   config.batch_actions = false
 
   permit_params :title, :about, :is_published, :meta_title, :meta_description, :meta_keywords,
-                road_research_technologies_attributes: [:id, :title, :category, :description, :status, :is_published, :_destroy],
-                road_research_laboratory_services_attributes: [:id, :title, :category, :description, :status, :is_published, :_destroy],
+                road_research_technologies_attributes: [ :id, :title, :category, :description, :status, :is_published, :_destroy ],
+                road_research_laboratory_services_attributes: [ :id, :title, :category, :description, :status, :is_published, :_destroy ],
                 gallery_images: []
 
   filter :title
@@ -75,7 +75,7 @@ ActiveAdmin.register RoadResearchCenter do
 
     f.inputs "Center Details" do
       f.input :title
-      f.input :about, as: :text, input_html: { rows: 6 }
+      f.input :about, as: :text, input_html: { rows: 6, class: "aa-richtext" }
       f.input :is_published
       f.input :meta_title
       f.input :meta_description
@@ -85,9 +85,9 @@ ActiveAdmin.register RoadResearchCenter do
     f.inputs "Research Technologies" do
       f.has_many :road_research_technologies, allow_destroy: true, new_record: "Add Technology" do |t|
         t.input :title
-        t.input :category, as: :select, collection: ["Soil Testing ", "Aggregate Testing", "Bitumen Testing", "Asphalt Mixture Testing", "Other"]
+        t.input :category, as: :select, collection: [ "Soil Testing ", "Aggregate Testing", "Bitumen Testing", "Asphalt Mixture Testing", "Other" ]
         t.input :description
-        t.input :status, as: :select, collection: ["active", "archived"], include_blank: false
+        t.input :status, as: :select, collection: [ "active", "archived" ], include_blank: false
         t.input :is_published
       end
     end
@@ -97,7 +97,7 @@ ActiveAdmin.register RoadResearchCenter do
         s.input :title
         s.input :category
         s.input :description
-        s.input :status, as: :select, collection: ["active", "archived"], include_blank: false
+        s.input :status, as: :select, collection: [ "active", "archived" ], include_blank: false
         s.input :is_published
       end
     end
@@ -112,7 +112,7 @@ ActiveAdmin.register RoadResearchCenter do
           end
         end
       end
-      f.input :gallery_images, as: :file, input_html: { multiple: true, accept: 'image/*' }
+      f.input :gallery_images, as: :file, input_html: { multiple: true, accept: "image/*" }
       li "Upload multiple images to the center's gallery."
     end
 

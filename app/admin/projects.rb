@@ -4,7 +4,34 @@ ActiveAdmin.register Project do
                 :objectives, :scope, :milestones, :challenges,
                 :is_published, :is_road_research_center_project, :meta_title, :meta_description, :meta_keywords,
                 images: [], documents: []
+controller do
+    def create
+      docs = params[:project].delete(:documents)
+      super do |success, _failure|
+        if success && docs.present?
+          Array(docs).each { |io| resource.documents.attach(io) }
+        end
+      end
+    end
 
+    def update
+      docs = params[:project].delete(:documents)
+      super do |success, _failure|
+        if success && docs.present?
+          Array(docs).each { |io| resource.documents.attach(io) }
+        end
+      end
+    end
+  end
+  member_action :remove_document, method: :post do
+    att = resource.documents.attachments.find_by(id: params[:attachment_id])
+    if att
+      att.purge
+      redirect_to resource_path, notice: "Document removed successfully."
+    else
+      redirect_to resource_path, alert: "Document not found."
+    end
+  end
   index do
     selectable_column
     id_column
@@ -149,6 +176,8 @@ ActiveAdmin.register Project do
               li do
                 span doc.filename.to_s
                 span link_to "Download", url_for(doc), target: "_blank"
+                span " "
+                span link_to("Delete", remove_document_admin_publication_path(project, attachment_id: doc.id), method: :post, data: { confirm: "Delete this document?" })
               end
             end
           end

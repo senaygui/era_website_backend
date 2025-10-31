@@ -104,6 +104,116 @@ function loadChartDatalabels(callback) {
   document.head.appendChild(s);
 }
 
+function loadQuill(callback) {
+  if (window.Quill) { callback && callback(); return; }
+  var existing = document.getElementById('quill-cdn');
+  if (!document.getElementById('quill-css')) {
+    var l = document.createElement('link');
+    l.id = 'quill-css';
+    l.rel = 'stylesheet';
+    l.href = 'https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css';
+    document.head.appendChild(l);
+  }
+  if (existing) {
+    existing.addEventListener('load', function(){ callback && callback(); }, { once: true });
+    return;
+  }
+  var s = document.createElement('script');
+  s.id = 'quill-cdn';
+  s.src = 'https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js';
+  s.async = true;
+  s.onload = function(){ callback && callback(); };
+  document.head.appendChild(s);
+}
+
+function initQuillEditors() {
+  if (!window.Quill) return;
+  var textareas = document.querySelectorAll('textarea.aa-richtext');
+  textareas.forEach(function(ta) {
+    if (ta._aaQuillInited) return;
+    ta._aaQuillInited = true;
+    ta.style.display = 'none';
+    var wrapper = document.createElement('div');
+    var editor = document.createElement('div');
+    editor.className = 'aa-quill-editor';
+    editor.innerHTML = ta.value || '';
+    wrapper.appendChild(editor);
+    ta.parentNode.insertBefore(wrapper, ta.nextSibling);
+    var q = new Quill(editor, { theme: 'snow' });
+    // Sync on form submit
+    var form = ta.closest('form');
+    if (form && !form._aaQuillHooked) {
+      form._aaQuillHooked = true;
+      form.addEventListener('submit', function(){
+        document.querySelectorAll('textarea.aa-richtext').forEach(function(t){
+          if (t._aaQuillInited && t.nextSibling && t.nextSibling.querySelector('.aa-quill-editor')) {
+            var ed = t.nextSibling.querySelector('.aa-quill-editor');
+            var ql = ed.__quill || (ed && ed.parentNode && ed.parentNode.__quill);
+            if (ql) { t.value = ql.root.innerHTML; }
+          }
+        });
+      });
+    }
+    // Keep reference
+    editor.__quill = q;
+  });
+}
+
+function loadCKEditor(callback) {
+  if (window.ClassicEditor) { callback && callback(); return; }
+  var existing = document.getElementById('ckeditor5-cdn');
+  if (existing) {
+    existing.addEventListener('load', function(){ callback && callback(); }, { once: true });
+    return;
+  }
+  var s = document.createElement('script');
+  s.id = 'ckeditor5-cdn';
+  // Super-build includes Base64UploadAdapter and MediaEmbed out of the box
+  s.src = 'https://cdn.ckeditor.com/ckeditor5/41.3.1/super-build/ckeditor.js';
+  s.async = true;
+  s.onload = function(){ callback && callback(); };
+  document.head.appendChild(s);
+}
+
+function initCKEditors() {
+  if (!window.ClassicEditor) return;
+  var textareas = document.querySelectorAll('textarea.aa-richtext');
+  textareas.forEach(function(ta) {
+    if (ta._aaCkInited) return;
+    ta._aaCkInited = true;
+    var holder = document.createElement('div');
+    holder.className = 'aa-ckeditor-holder';
+    ta.style.display = 'none';
+    ta.parentNode.insertBefore(holder, ta.nextSibling);
+    window.ClassicEditor
+      .create(holder, {
+        initialData: ta.value || '',
+        toolbar: {
+          items: [ 'heading','|','bold','italic','underline','link','bulletedList','numberedList','blockQuote','insertTable','mediaEmbed','imageUpload','undo','redo' ]
+        },
+        removePlugins: [ 'CKBox','CKFinder','EasyImage','RealTimeCollaborativeComments','RealTimeCollaborativeTrackChanges','RealTimeCollaborativeRevisionHistory','PresenceList','Comments','TrackChanges','TrackChangesData','RevisionHistory','Pagination','WProofreader','MathType','SlashCommand','Template','DocumentOutline','FormatPainter','TableOfContents','PasteFromOfficeEnhanced' ]
+      })
+      .then(function(editor){
+        ta._editor = editor;
+        // Sync back to textarea on submit
+        var form = ta.closest('form');
+        if (form && !form._aaCkHooked) {
+          form._aaCkHooked = true;
+          form.addEventListener('submit', function(){
+            document.querySelectorAll('textarea.aa-richtext').forEach(function(t){
+              if (t._editor) { t.value = t._editor.getData(); }
+            });
+          });
+        }
+      })
+      .catch(function(e){ console && console.warn('CKEditor init failed', e); });
+  });
+}
+
+function bootRichText() {
+  loadCKEditor(function(){ initCKEditors(); });
+}
+
 // Boot charts after helpers are available
 function bootCharts() {
   if (window.Chart) {
@@ -121,6 +231,26 @@ function bootCharts() {
   } else {
     loadChartJs(function(){ loadChartDatalabels(function(){ setupChartDefaults(); initAACharts(); }); });
   }
+}
+
+function observeForRichTextEditors() {
+  try {
+    var observer = new MutationObserver(function(mutations){
+      var needsInit = false;
+      mutations.forEach(function(m){
+        if (m.addedNodes && m.addedNodes.length) {
+          m.addedNodes.forEach(function(n){
+            if (n.nodeType === 1) {
+              if (n.matches && n.matches('textarea.aa-richtext')) needsInit = true;
+              if (!needsInit && n.querySelector && n.querySelector('textarea.aa-richtext')) needsInit = true;
+            }
+          });
+        }
+      });
+      if (needsInit) { bootRichText(); }
+    });
+    observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
+  } catch (e) { /* no-op */ }
 }
 
 // DOM behaviors and chart bootstrapping
@@ -276,9 +406,12 @@ $(document).ready(function () {
 
   // Initialize charts after DOM ready
   bootCharts();
+  // Initialize rich text editors (CKEditor)
+  bootRichText();
+  observeForRichTextEditors();
 });
 // Also re-init charts when using Turbolinks/Turbo navigations
 if (document.addEventListener) {
-  document.addEventListener('turbolinks:load', bootCharts);
-  document.addEventListener('turbo:load', bootCharts);
+  document.addEventListener('turbolinks:load', function(){ bootCharts(); bootRichText(); observeForRichTextEditors(); });
+  document.addEventListener('turbo:load', function(){ bootCharts(); bootRichText(); observeForRichTextEditors(); });
 }
