@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class News < ApplicationRecord
   # Active Storage
   has_one_attached :image
@@ -41,7 +43,19 @@ class News < ApplicationRecord
   private
 
   def generate_slug
-    self.slug = title.parameterize if title.present?
+    return unless title.present?
+
+    base = title.to_s
+    slugified = base.parameterize
+    slugified = "news-#{SecureRandom.hex(4)}" if slugified.blank?
+
+    candidate = slugified
+    idx = 2
+    while self.class.exists?(slug: candidate)
+      candidate = "#{slugified}-#{idx}"
+      idx += 1
+    end
+    self.slug = candidate
   end
 
   def generate_excerpt

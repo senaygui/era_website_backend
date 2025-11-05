@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class Event < ApplicationRecord
   # ActiveStorage
   has_one_attached :event_image
@@ -77,7 +79,19 @@ class Event < ApplicationRecord
 
   def generate_slug
     return if slug.present?
-    self.slug = title.parameterize
+    return unless title.present?
+
+    base = title.to_s
+    slugified = base.parameterize
+    slugified = "event-#{SecureRandom.hex(4)}" if slugified.blank?
+
+    candidate = slugified
+    idx = 2
+    while self.class.exists?(slug: candidate)
+      candidate = "#{slugified}-#{idx}"
+      idx += 1
+    end
+    self.slug = candidate
   end
 
   def set_default_status

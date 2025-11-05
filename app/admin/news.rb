@@ -3,7 +3,7 @@ ActiveAdmin.register News do
   menu parent: "Events & News", priority: 1
   permit_params :title, :content, :excerpt, :published_date, :is_published,
                 :category, :is_featured, :author, :meta_title, :meta_description,
-                :image, tags: [], meta_keywords: []
+                :image, :tag_list, :meta_keywords
 
   # Rely on default update action
 
@@ -37,10 +37,10 @@ ActiveAdmin.register News do
       f.input :title
       f.input :content, as: :text, input_html: { rows: 10 }
       f.input :excerpt, as: :text, input_html: { rows: 3 }
-      f.input :image, as: :file, hint: f.object.image.attached? ? image_tag(url_for(f.object.image.variant(resize_to_limit: [ 200, 200 ]))) : nil
+      f.input :image, as: :file
       f.input :published_date, as: :date_picker
       f.input :category
-      f.input :tags, as: :tags
+      f.input :tag_list, input_html: { value: f.object.tag_list.join(', ') }
       f.input :is_published
       f.input :is_featured
       f.input :author
@@ -49,7 +49,7 @@ ActiveAdmin.register News do
     f.inputs "SEO Settings" do
       f.input :meta_title
       f.input :meta_description, as: :text, input_html: { rows: 3 }
-      f.input :meta_keywords, as: :tags
+      f.input :meta_keywords
     end
 
     f.actions

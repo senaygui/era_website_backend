@@ -17,9 +17,9 @@ module Api
       end
 
       def show
-        Rails.logger.info "Processing news show request for slug: #{params[:id]}"
+        Rails.logger.info "Processing news show request for slug: #{params[:slug]}"
         begin
-          @news = News.find_by!(slug: params[:id])
+          @news = News.find_by!(slug: params[:slug])
           @news.increment_view_count
           Rails.logger.info "Found news article: #{@news.title}"
           render json: news_attributes(@news)
@@ -36,19 +36,35 @@ module Api
       private
 
       def news_attributes(news)
+        image_url = nil
+        thumb_url = nil
+        if news.image.attached?
+          begin
+            image_url = url_for(news.image)
+          rescue => e
+            Rails.logger.warn "Image URL generation failed for News##{news.id}: #{e.class} - #{e.message}"
+          end
+          begin
+            thumb_url = url_for(news.image.variant(resize_to_limit: [ 300, 300 ]))
+          rescue => e
+            Rails.logger.warn "Thumbnail generation failed for News##{news.id}: #{e.class} - #{e.message}"
+          end
+        end
+
         {
           id: news.id,
+          slug: news.slug,
           title: news.title,
           content: news.content,
           excerpt: news.excerpt,
           published_date: news.published_date,
           category: news.category,
-          tags: news.tags,
+          tags: news.tag_list,
           is_featured: news.is_featured,
           view_count: news.view_count,
           author: news.author,
-          image_url: news.image.attached? ? url_for(news.image) : nil,
-          thumbnail_url: news.image.attached? ? url_for(news.image.variant(resize_to_limit: [ 300, 300 ])) : nil,
+          image_url: image_url,
+          thumbnail_url: thumb_url,
           created_at: news.created_at,
           updated_at: news.updated_at
         }
