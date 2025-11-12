@@ -13,8 +13,8 @@ ActiveAdmin.register AboutUs do
 
   # Index page configuration
   index do
-    column :title
-    column :subtitle
+    column(:title)    { |r| content_tag(:span, truncate(r.title.to_s, length: 60),   title: r.title.to_s) }
+    column(:subtitle) { |r| content_tag(:span, truncate(r.subtitle.to_s, length: 80), title: r.subtitle.to_s) }
     column :updated_at
     column :is_published
     actions

@@ -7,11 +7,10 @@ ActiveAdmin.register Bid do
 
   index do
     selectable_column
-    id_column
     column :bid_number
-    column :title
-    column :category
-    column :type_of_bid
+    column(:title)      { |r| content_tag(:span, truncate(r.title.to_s, length: 60),   title: r.title.to_s) }
+    column(:category)   { |r| content_tag(:span, truncate(r.category.to_s, length: 40), title: r.category.to_s) }
+    column(:type_of_bid){ |r| content_tag(:span, truncate(r.type_of_bid.to_s, length: 30), title: r.type_of_bid.to_s) }
     column :status
     column :publish_date
     column :deadline_date

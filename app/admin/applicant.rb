@@ -16,12 +16,12 @@ ActiveAdmin.register Applicant do
 
   index do
     selectable_column
-    id_column
-    column :full_name
-    column :email
-    column :phone
+    column(:full_name) { |a| content_tag(:span, truncate(a.full_name.to_s, length: 60), title: a.full_name.to_s) }
+    column(:email)     { |a| content_tag(:span, truncate(a.email.to_s, length: 40), title: a.email.to_s) }
+    column(:phone)     { |a| content_tag(:span, truncate(a.phone.to_s, length: 24), title: a.phone.to_s) }
     column :vacancy do |applicant|
-      link_to applicant.vacancy.title, admin_vacancy_path(applicant.vacancy)
+      title = applicant.vacancy&.title.to_s
+      link_to truncate(title, length: 60), admin_vacancy_path(applicant.vacancy), title: title
     end
     column :status do |applicant|
       status_tag applicant.status, class: status_class(applicant.status)
@@ -200,7 +200,7 @@ ActiveAdmin.register Applicant do
   end
 
   # Helper method for status colors
-  member_action :update_status, method: :put do
+  member_action :update_status, method: :post do
     resource.update(status: params[:status])
     redirect_to resource_path, notice: "Status updated to #{params[:status]}"
   end
@@ -210,7 +210,10 @@ ActiveAdmin.register Applicant do
       Applicant.statuses.keys.each do |status|
         next if resource.status == status
         # Correct path helper for member_action :update_status
-        item status.humanize, update_status_admin_applicant_path(resource, status: status), method: :put
+        item status.humanize,
+             update_status_admin_applicant_path(id: resource.id, status: status),
+             method: :post,
+             data: { turbo: false }
       end
     end
   end

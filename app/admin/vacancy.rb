@@ -6,9 +6,9 @@ ActiveAdmin.register Vacancy do
   menu parent: "Vacancies", priority: 1, label: "Vacancies"
   index do
     selectable_column
-    column :title
-    column :department
-    column :location
+    column(:title)       { |v| truncate(v.title, length: 60) }
+    column(:department)  { |v| truncate(v.department, length: 40) }
+    column(:location)    { |v| truncate(v.location, length: 40) }
     column :job_type
     column :deadline
     column :posted_date

@@ -56,13 +56,13 @@ ActiveAdmin.register RoadAsset do
 
   index do
     selectable_column
-    id_column
-    column :title
-    column :category
+    column(:title)    { |r| content_tag(:span, truncate(r.title.to_s, length: 60),   title: r.title.to_s) }
+    column(:category) { |r| content_tag(:span, truncate(r.category.to_s, length: 40), title: r.category.to_s) }
     column :year
     column :publish_date
     column :authors do |ra|
-      ra.authors&.join(", ")
+      list = ra.authors&.join(", ") || ""
+      content_tag(:span, truncate(list, length: 60), title: list)
     end
     column :is_new
     column :download_count

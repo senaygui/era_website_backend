@@ -15,9 +15,10 @@ ActiveAdmin.register AdminUser do
   index do
     selectable_column
     column "Full Name" do |n|
-      "#{n.first_name} #{n.middle_name} #{n.last_name}"
+      name = [n.first_name, n.middle_name, n.last_name].compact.join(" ").strip
+      content_tag(:span, truncate(name, length: 50), title: name)
     end
-    column :email
+    column(:email) { |n| content_tag(:span, truncate(n.email.to_s, length: 40), title: n.email.to_s) }
     column :role
     column :current_sign_in_at
     column :sign_in_count

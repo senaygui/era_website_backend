@@ -4,9 +4,8 @@ ActiveAdmin.register District do
 
   index do
     selectable_column
-    id_column
-    column :name
-    column :address
+    column(:name)    { |r| content_tag(:span, truncate(r.name.to_s, length: 60),   title: r.name.to_s) }
+    column(:address) { |r| content_tag(:span, truncate(r.address.to_s, length: 60), title: r.address.to_s) }
     column :is_published
     actions
   end

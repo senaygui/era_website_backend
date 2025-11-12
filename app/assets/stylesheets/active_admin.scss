@@ -134,7 +134,21 @@ body {
    width: 500px;
    height: 300px !important;
  }
- 
+
+// Ensure Change Status dropdown links are readable
+.action_items .dropdown_menu a,
+.action_item .dropdown_menu a {
+  color: #d46a14 !important; // slate-800
+}
+
+.action_items .dropdown_menu a:hover,
+.action_item .dropdown_menu a:hover,
+.action_items .dropdown_menu a:focus,
+.action_item .dropdown_menu a:focus {
+  background: #e29b20 !important; // ERA orange
+  color: #ffffff !important;
+}
+
  // file-upload
  
  .file-upload {
@@ -292,6 +306,35 @@ body {
  .suspended {
    background: #e29b20;
  }
+
+// Applicant status tag colors
+.status_tag {
+  &.blue { // applied
+    background: #3b82f6 !important; // blue-500
+    color: #ffffff !important;
+  }
+  &.orange { // under_review
+    background: #f59e0b !important; // amber-500
+    color: #111827 !important; // slate-900
+  }
+  &.purple { // shortlisted
+    background: #8b5cf6 !important; // violet-500
+    color: #ffffff !important;
+  }
+  &.yellow { // interview_scheduled
+    background: #fbbf24 !important; // yellow-400
+    color: #111827 !important; // slate-900
+  }
+  &.green { // hired
+    background: #10b981 !important; // emerald-500
+    color: #ffffff !important;
+  }
+  &.red { // rejected
+    background: #ef4444 !important; // red-500
+    color: #ffffff !important;
+  }
+}
+
  
  // scope
  

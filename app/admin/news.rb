@@ -9,9 +9,8 @@ ActiveAdmin.register News do
 
   index do
     selectable_column
-    id_column
-    column :title
-    column :category
+    column(:title)    { |r| content_tag(:span, truncate(r.title.to_s, length: 60),   title: r.title.to_s) }
+    column(:category) { |r| content_tag(:span, truncate(r.category.to_s, length: 40), title: r.category.to_s) }
     column :published_date
     column :is_published
     column :is_featured

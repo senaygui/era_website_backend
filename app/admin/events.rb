@@ -15,10 +15,9 @@ ActiveAdmin.register Event do
   # Index page configuration
   index do
     selectable_column
-
-    column :title
-    column :event_type, as: :string
-    column :location
+    column(:title)       { |r| content_tag(:span, truncate(r.title.to_s, length: 60),    title: r.title.to_s) }
+    column(:event_type)  { |r| content_tag(:span, truncate(r.event_type.to_s, length: 30), title: r.event_type.to_s) }
+    column(:location)    { |r| content_tag(:span, truncate(r.location.to_s, length: 40),  title: r.location.to_s) }
     column :is_road_research_center_event
     column :start_date
     column :end_date

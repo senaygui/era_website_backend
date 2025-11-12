@@ -34,10 +34,9 @@ controller do
   end
   index do
     selectable_column
-    id_column
-    column :title
-    column :status
-    column :location
+    column(:title)    { |r| content_tag(:span, truncate(r.title.to_s, length: 60),   title: r.title.to_s) }
+    column(:status)   { |r| content_tag(:span, truncate(r.status.to_s, length: 24),  title: r.status.to_s) }
+    column(:location) { |r| content_tag(:span, truncate(r.location.to_s, length: 40), title: r.location.to_s) }
     column :is_road_research_center_project
     column :start_date
     column :end_date
