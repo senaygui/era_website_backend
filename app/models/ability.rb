@@ -16,7 +16,7 @@ class Ability
       can :manage, :all
     when "author"
       can :read, :all
-      can [:create, :update], [
+      can [ :create, :update ], [
         News,
         Publication,
         Event,
@@ -29,7 +29,7 @@ class Ability
       cannot :manage, AdminUser
     when "publisher"
       can :read, :all
-      can [:create, :update, :destroy], [
+      can [ :create, :update, :destroy ], [
         News,
         Publication,
         Event
@@ -54,4 +54,3 @@ class Ability
     end
   end
 end
-
