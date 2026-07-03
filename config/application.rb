@@ -42,6 +42,9 @@ module EraWebsiteBackend
     config.active_storage.service_urls_expire_in = 1.hour
     config.active_storage.routes_prefix = "/rails/active_storage"
 
+    # Allow iframing of documents by removing the X-Frame-Options header
+    config.action_dispatch.default_headers.delete('X-Frame-Options')
+
     # Configure logging
     config.log_level = :debug
     config.logger = ActiveSupport::Logger.new(STDOUT)
