@@ -29,7 +29,7 @@ module Api
 
         # Atomic counter increment
         Publication.increment_counter(:download_count, publication.id)
-        redirect_to url_for(doc)
+        redirect_to rails_blob_url(doc, disposition: 'inline')
       end
 
       private
@@ -57,7 +57,7 @@ module Api
           filename: b.filename.to_s,
           content_type: b.content_type,
           byte_size: b.byte_size,
-          url: url_for(att)
+          url: rails_blob_url(att, disposition: 'inline')
         }
       end
     end

@@ -27,7 +27,7 @@ module Api
         return render json: { error: "File not available" }, status: :not_found unless doc
 
         RoadAsset.increment_counter(:download_count, asset.id)
-        redirect_to url_for(doc)
+        redirect_to rails_blob_url(doc, disposition: 'inline')
       end
 
       private
@@ -55,7 +55,7 @@ module Api
           filename: b.filename.to_s,
           content_type: b.content_type,
           byte_size: b.byte_size,
-          url: url_for(att)
+          url: rails_blob_url(att, disposition: 'inline')
         }
       end
     end

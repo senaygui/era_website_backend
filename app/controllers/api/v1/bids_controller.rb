@@ -107,7 +107,7 @@ module Api
               name: document.filename.to_s,
               size: ActiveStorage::Analyzer::SizeAnalyzer.new(document.blob).metadata[:size].to_s + " bytes",
               type: document.content_type.split('/').last,
-              url: url_for(document)
+              url: rails_blob_url(document, disposition: 'inline')
             }
           } : [],
           created_at: bid.created_at,

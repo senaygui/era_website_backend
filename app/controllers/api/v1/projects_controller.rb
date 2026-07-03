@@ -112,7 +112,7 @@ module Api
                 id: document.id,
                 filename: document.filename.to_s,
                 content_type: document.content_type,
-                url: url_for(document)
+                url: rails_blob_url(document, disposition: 'inline')
               }
             } : []
           })
