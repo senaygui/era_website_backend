@@ -127,8 +127,8 @@ ActiveAdmin.setup do |config|
   # This setting changes the http method used when rendering the
   # link. For example :get, :delete, :put, etc..
   #
-  # Default:
-  # config.logout_link_method = :get
+  # Use GET so logout still works when Rails UJS or Turbo is unavailable.
+  config.logout_link_method = :get
 
   # == Root
   #

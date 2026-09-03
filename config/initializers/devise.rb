@@ -265,8 +265,9 @@ Devise.setup do |config|
   # The "*/*" below is required to match Internet Explorer requests.
   # config.navigational_formats = ['*/*', :html, :turbo_stream]
 
-  # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  # Active Admin renders logout as a plain link. Keep DELETE available for
+  # clients that already use the standard Devise method.
+  config.sign_out_via = [ :delete, :get ]
 
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
