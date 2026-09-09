@@ -48,7 +48,7 @@ ActiveAdmin.register Event do
     f.inputs "Basic Information" do
       f.input :title
       f.input :excerpt
-      f.input :description, as: :text, input_html: { rows: 5 }
+      f.input :description, as: :tiptap
       f.input :event_image, as: :file
       f.input :location
       f.input :event_type, as: :select, collection: [ "Conference", "Workshop", "Seminar", "Training", "Public Consultation", "Launch Event" ]

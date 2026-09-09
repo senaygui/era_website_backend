@@ -75,7 +75,7 @@ ActiveAdmin.register RoadResearchCenter do
 
     f.inputs "Center Details" do
       f.input :title
-      f.input :about, as: :text, input_html: { rows: 6, class: "aa-richtext" }
+      f.input :about, as: :tiptap
       f.input :is_published
       f.input :meta_title
       f.input :meta_description, input_html: { class: "aa-plain-text" }
@@ -86,7 +86,7 @@ ActiveAdmin.register RoadResearchCenter do
       f.has_many :road_research_technologies, allow_destroy: true, new_record: "Add Technology" do |t|
         t.input :title
         t.input :category, as: :select, collection: [ "Soil Testing ", "Aggregate Testing", "Bitumen Testing", "Asphalt Mixture Testing", "Other" ]
-        t.input :description
+        t.input :description, as: :tiptap
         t.input :status, as: :select, collection: [ "active", "archived" ], include_blank: false
         t.input :is_published
       end
@@ -96,7 +96,7 @@ ActiveAdmin.register RoadResearchCenter do
       f.has_many :road_research_laboratory_services, allow_destroy: true, new_record: "Add Laboratory Service" do |s|
         s.input :title
         s.input :category
-        s.input :description
+        s.input :description, as: :tiptap
         s.input :status, as: :select, collection: [ "active", "archived" ], include_blank: false
         s.input :is_published
       end

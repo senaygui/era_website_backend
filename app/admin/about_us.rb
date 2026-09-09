@@ -30,14 +30,14 @@ ActiveAdmin.register AboutUs do
     f.inputs "Basic Information" do
       f.input :title
       f.input :subtitle
-      f.input :description, as: :text, input_html: { rows: 5 }
+      f.input :description, as: :tiptap
       f.input :hero_image, as: :file, hint: f.object.persisted? && f.object.hero_image.attached? ? image_tag(f.object.hero_image, size: "200x150", class: "img-corner") : "No image uploaded"
     end
 
     f.inputs "Mission & Vision" do
-      f.input :mission, as: :text, input_html: { rows: 4 }
+      f.input :mission, as: :tiptap
       f.input :mission_image, as: :file, hint: f.object.persisted? && f.object.mission_image.attached? ? image_tag(f.object.mission_image, size: "200x150", class: "img-corner") : "No image uploaded"
-      f.input :vision, as: :text, input_html: { rows: 4 }
+      f.input :vision, as: :tiptap
       f.input :vision_image, as: :file, hint: f.object.persisted? && f.object.vision_image.attached? ? image_tag(f.object.vision_image, size: "200x150", class: "img-corner") : "No image uploaded"
     end
 
@@ -51,15 +51,15 @@ ActiveAdmin.register AboutUs do
     end
 
     f.inputs "History & Team" do
-      f.input :history, as: :text, input_html: { rows: 4  }
+      f.input :history, as: :tiptap
       f.input :history_image, as: :file, hint: f.object.persisted? && f.object.history_image.attached? ? image_tag(f.object.history_image, size: "200x150", class: "img-corner") : "No image uploaded"
       f.input :org_structure_image, as: :file, hint: f.object.persisted? && f.object.org_structure_image.attached? ? image_tag(f.object.org_structure_image, size: "200x150", class: "img-corner") : "No image uploaded"
-      f.input :team_description, as: :text, input_html: { rows: 4  }
+      f.input :team_description, as: :tiptap
 
       f.has_many :team_members, allow_destroy: true, new_record: true, heading: "Team Members" do |tm|
         tm.input :name
         tm.input :job_title
-        tm.input :description, as: :text, input_html: { rows: 3  }
+        tm.input :description, as: :tiptap
         tm.input :image, as: :file, hint: (tm.object.persisted? && tm.object.image.attached?) ? image_tag(tm.object.image, size: "100x100", class: "img-corner") : "No image uploaded"
       end
       f.input :team_images, as: :file, input_html: { multiple: true }
@@ -85,14 +85,16 @@ ActiveAdmin.register AboutUs do
     end
 
     f.inputs "Achievements, Milestones & Partners" do
-      f.input :achievements_description, label: "Major Achievements Description", as: :text, input_html: { rows: 3 , placeholder: "Provide an overview of the organization's major achievements" }
+      f.input :achievements_description, label: "Major Achievements Description", as: :tiptap,
+        input_html: { placeholder: "Provide an overview of the organization's major achievements" }
       f.input :achievements, as: :text, input_html: {
         rows: 5,
         class: "aa-plain-text",
         value: f.object.achievements.is_a?(Array) ? f.object.achievements.map { |a| "#{a['stats']}|#{a['title']}|#{a['description']}" }.join("\n") : ""
       }, hint: "Format: Stats|Title|Description (one per line)"
 
-      f.input :milestones_description, label: "Milestones Description", as: :text, input_html: { rows: 3 , placeholder: "Provide an overview of the organization's journey and key milestones" }
+      f.input :milestones_description, label: "Milestones Description", as: :tiptap,
+        input_html: { placeholder: "Provide an overview of the organization's journey and key milestones" }
       f.input :milestones, as: :text, input_html: {
         rows: 5,
         class: "aa-plain-text",

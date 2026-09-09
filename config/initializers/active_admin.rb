@@ -232,9 +232,11 @@ ActiveAdmin.setup do |config|
   #
   # You can provide an options hash for more control, which is passed along to stylesheet_link_tag():
   #   config.register_stylesheet 'my_print_stylesheet.css', media: :print
+  config.register_stylesheet "active_admin_tiptap.css"
   #
   # To load a javascript file:
   #   config.register_javascript 'my_javascript.js'
+  config.register_javascript "active_admin_tiptap.js", type: :module
 
   # == CSV options
   #

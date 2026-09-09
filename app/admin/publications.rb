@@ -123,7 +123,7 @@ ActiveAdmin.register Publication do
       f.input :category
       f.input :publish_date, as: :datetime_picker
       f.input :authors, as: :select, multiple: true, collection: AdminUser.all.map { |u| [u.full_name, u.full_name] }
-      f.input :description
+      f.input :description, as: :tiptap
       f.input :is_new
       f.input :meta_title
       f.input :meta_description, input_html: { class: "aa-plain-text" }

@@ -52,7 +52,7 @@ ActiveAdmin.register Bid do
       f.input :deadline_date, as: :datepicker
       f.input :budget
       f.input :funding_source
-      f.input :description, as: :text
+      f.input :description, as: :tiptap
       f.input :eligibility, as: :text, input_html: {
         value: f.object.eligibility.to_json,
         class: "aa-plain-text",

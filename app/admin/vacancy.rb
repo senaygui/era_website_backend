@@ -41,7 +41,7 @@ ActiveAdmin.register Vacancy do
       ]
       f.input :deadline, as: :date_picker
       f.input :posted_date, as: :date_picker
-      f.input :description, as: :text, input_html: { rows: 5 }
+      f.input :description, as: :tiptap
       f.input :salary
       f.input :position
       f.input :is_published

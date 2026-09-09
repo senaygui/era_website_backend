@@ -63,8 +63,8 @@ ActiveAdmin.register District do
   form do |f|
     f.inputs "District Informations" do
       f.input :name
-      f.input :district_overview
-      f.input :detail_description
+      f.input :district_overview, as: :tiptap
+      f.input :detail_description, as: :tiptap
       f.input :address
       f.input :map_embed, input_html: { class: "aa-plain-text" }
       f.input :phone_numbers, as: :text,

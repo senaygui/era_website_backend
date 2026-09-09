@@ -34,7 +34,7 @@ ActiveAdmin.register News do
   form do |f|
     f.inputs "News Details" do
       f.input :title
-      f.input :content, as: :text, input_html: { rows: 10 }
+      f.input :content, as: :tiptap
       f.input :excerpt, as: :text, input_html: { rows: 3 }
       f.input :image, as: :file
       f.input :published_date, as: :date_picker

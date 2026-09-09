@@ -56,7 +56,7 @@ controller do
   form do |f|
     f.inputs do
       f.input :title
-      f.input :description, as: :text
+      f.input :description, as: :tiptap
       f.input :status, as: :select, collection: [ "ongoing", "completed", "upcoming", "on-hold" ]
       f.input :location
       f.input :is_road_research_center_project, label: "Road Research Center related"
@@ -65,8 +65,8 @@ controller do
       f.input :end_date, as: :datepicker
       f.input :contractor
       f.input :project_manager
-      f.input :objectives, as: :text
-      f.input :scope, as: :text
+      f.input :objectives, as: :tiptap
+      f.input :scope, as: :tiptap
       f.input :milestones, as: :text, input_html: { value: f.object.milestones.to_json, class: "aa-plain-text", hint: "JSON array of milestone objects with title, description, date, and completed fields" }
       f.input :challenges, as: :text, input_html: { value: f.object.challenges.to_json, class: "aa-plain-text", hint: "JSON array of challenge objects with title and description fields" }
       f.input :images, as: :file, input_html: { multiple: true }
