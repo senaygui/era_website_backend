@@ -78,7 +78,7 @@ ActiveAdmin.register RoadResearchCenter do
       f.input :about, as: :text, input_html: { rows: 6, class: "aa-richtext" }
       f.input :is_published
       f.input :meta_title
-      f.input :meta_description
+      f.input :meta_description, input_html: { class: "aa-plain-text" }
       f.input :meta_keywords
     end
 
@@ -106,13 +106,27 @@ ActiveAdmin.register RoadResearchCenter do
       if f.object.gallery_images.attached?
         div do
           f.object.gallery_images.each do |img|
-            span do
-              image_tag url_for(img), style: "max-width: 100px; height: auto; margin: 6px; border-radius: 6px; border: 1px solid #eee;"
+            div class: "gallery-image-item", style: "display: inline-flex; flex-direction: column; align-items: center; margin: 6px;" do
+              if img.respond_to?(:blob) && img.blob.persisted?
+                image_tag url_for(img), style: "max-width: 100px; height: auto; border-radius: 6px; border: 1px solid #eee;"
+              else
+                span "Pending upload", style: "display: inline-block; padding: 24px 10px; border: 1px solid #eee; border-radius: 6px;"
+              end
+
+              if img.persisted?
+                # Keep the signed ID in the form, then purge it after a
+                # successful update when the administrator clicks Remove.
+                hidden_field_tag "road_research_center[gallery_images][]", img.signed_id
+                check_box_tag "road_research_center[remove_gallery_images][]", img.signed_id, false,
+                              class: "gallery-image-remove", style: "display: none;"
+                link_to "Remove", "#", class: "gallery-image-remove-button", style: "margin-top: 4px; color: #c53030;",
+                        onclick: "event.preventDefault(); var item = this.closest('.gallery-image-item'); item.querySelector('.gallery-image-remove').checked = true; item.style.display = 'none';"
+              end
             end
           end
         end
       end
-      f.input :gallery_images, as: :file, input_html: { multiple: true, accept: "image/*" }
+      f.input :gallery_images, as: :file, input_html: { multiple: true, accept: "image/jpeg,image/png,image/webp,image/gif" }
       li "Upload multiple images to the center's gallery."
     end
 
@@ -140,6 +154,23 @@ ActiveAdmin.register RoadResearchCenter do
     def show
       @road_research_center = RoadResearchCenter.instance
       super
+    end
+
+    def update
+      remove_ids = Array(params.dig(:road_research_center, :remove_gallery_images)).reject(&:blank?)
+      # This is a form-only control, not a RoadResearchCenter attribute.
+      params[:road_research_center]&.delete(:remove_gallery_images)
+      super
+
+      # Purge only after ActiveAdmin has saved successfully. This keeps the
+      # existing upload available if validation fails and the form is shown
+      # again.
+      if resource.errors.empty?
+        remove_ids.each do |signed_id|
+          attachment = resource.gallery_images.attachments.find { |item| item.signed_id == signed_id }
+          attachment&.purge
+        end
+      end
     end
   end
 end

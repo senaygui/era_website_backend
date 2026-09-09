@@ -47,7 +47,7 @@ ActiveAdmin.register News do
 
     f.inputs "SEO Settings" do
       f.input :meta_title
-      f.input :meta_description, as: :text, input_html: { rows: 3 }
+      f.input :meta_description, as: :text, input_html: { rows: 3, class: "aa-plain-text" }
       f.input :meta_keywords
     end
 

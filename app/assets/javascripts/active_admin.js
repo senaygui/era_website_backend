@@ -128,7 +128,7 @@ function loadQuill(callback) {
 
 function initQuillEditors() {
   if (!window.Quill) return;
-  var textareas = document.querySelectorAll('textarea.aa-richtext');
+  var textareas = document.querySelectorAll('textarea:not(.aa-plain-text)');
   textareas.forEach(function(ta) {
     if (ta._aaQuillInited) return;
     ta._aaQuillInited = true;
@@ -145,7 +145,7 @@ function initQuillEditors() {
     if (form && !form._aaQuillHooked) {
       form._aaQuillHooked = true;
       form.addEventListener('submit', function(){
-        document.querySelectorAll('textarea.aa-richtext').forEach(function(t){
+        document.querySelectorAll('textarea:not(.aa-plain-text)').forEach(function(t){
           if (t._aaQuillInited && t.nextSibling && t.nextSibling.querySelector('.aa-quill-editor')) {
             var ed = t.nextSibling.querySelector('.aa-quill-editor');
             var ql = ed.__quill || (ed && ed.parentNode && ed.parentNode.__quill);
@@ -159,8 +159,12 @@ function initQuillEditors() {
   });
 }
 
+function getClassicEditor() {
+  return window.ClassicEditor || (window.CKEDITOR && window.CKEDITOR.ClassicEditor);
+}
+
 function loadCKEditor(callback) {
-  if (window.ClassicEditor) { callback && callback(); return; }
+  if (getClassicEditor()) { callback && callback(); return; }
   var existing = document.getElementById('ckeditor5-cdn');
   if (existing) {
     existing.addEventListener('load', function(){ callback && callback(); }, { once: true });
@@ -176,8 +180,9 @@ function loadCKEditor(callback) {
 }
 
 function initCKEditors() {
-  if (!window.ClassicEditor) return;
-  var textareas = document.querySelectorAll('textarea.aa-richtext');
+  var ClassicEditor = getClassicEditor();
+  if (!ClassicEditor) return;
+  var textareas = document.querySelectorAll('textarea:not(.aa-plain-text)');
   textareas.forEach(function(ta) {
     if (ta._aaCkInited) return;
     ta._aaCkInited = true;
@@ -185,7 +190,7 @@ function initCKEditors() {
     holder.className = 'aa-ckeditor-holder';
     ta.style.display = 'none';
     ta.parentNode.insertBefore(holder, ta.nextSibling);
-    window.ClassicEditor
+    ClassicEditor
       .create(holder, {
         initialData: ta.value || '',
         toolbar: {
@@ -200,7 +205,7 @@ function initCKEditors() {
         if (form && !form._aaCkHooked) {
           form._aaCkHooked = true;
           form.addEventListener('submit', function(){
-            document.querySelectorAll('textarea.aa-richtext').forEach(function(t){
+            document.querySelectorAll('textarea:not(.aa-plain-text)').forEach(function(t){
               if (t._editor) { t.value = t._editor.getData(); }
             });
           });
@@ -210,8 +215,212 @@ function initCKEditors() {
   });
 }
 
+function initNativeRichTextEditors() {
+  var textareas = document.querySelectorAll('textarea:not(.aa-plain-text)');
+  textareas.forEach(function(ta) {
+    if (ta._aaNativeEditorInited) return;
+    ta._aaNativeEditorInited = true;
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'aa-native-editor';
+    var toolbar = document.createElement('div');
+    toolbar.className = 'aa-native-editor__toolbar';
+    toolbar.setAttribute('role', 'toolbar');
+    toolbar.setAttribute('aria-label', 'Text formatting');
+    var editor = document.createElement('div');
+    editor.className = 'aa-native-editor__content';
+    editor.contentEditable = 'true';
+    editor.setAttribute('role', 'textbox');
+    editor.setAttribute('aria-multiline', 'true');
+    editor.setAttribute('data-placeholder', ta.getAttribute('placeholder') || 'Enter content…');
+
+    if (/<[a-z][\s\S]*>/i.test(ta.value || '')) editor.innerHTML = ta.value;
+    else editor.textContent = ta.value || '';
+
+    var savedRange = null;
+    function syncValue() { ta.value = editor.innerHTML; }
+    function saveSelection() {
+      var selection = window.getSelection();
+      if (selection && selection.rangeCount && editor.contains(selection.anchorNode)) {
+        savedRange = selection.getRangeAt(0).cloneRange();
+      }
+    }
+    function restoreSelection() {
+      if (!savedRange) return;
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedRange);
+    }
+    function addSeparator() {
+      var separator = document.createElement('span');
+      separator.className = 'aa-native-editor__separator';
+      toolbar.appendChild(separator);
+    }
+    function addButton(label, title, command, value) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'aa-native-editor__button';
+      button.innerHTML = label;
+      button.title = title;
+      button.setAttribute('aria-label', title);
+      button.addEventListener('mousedown', function(event) {
+        event.preventDefault();
+        editor.focus();
+        document.execCommand(command, false, value || null);
+        syncValue();
+      });
+      toolbar.appendChild(button);
+      return button;
+    }
+
+    var heading = document.createElement('select');
+    heading.className = 'aa-native-editor__select';
+    heading.title = 'Text style';
+    [['p', 'Paragraph'], ['h2', 'Heading'], ['h3', 'Subheading'], ['pre', 'Code block']].forEach(function(item) {
+      var option = document.createElement('option');
+      option.value = item[0];
+      option.textContent = item[1];
+      heading.appendChild(option);
+    });
+    heading.addEventListener('change', function() {
+      editor.focus();
+      document.execCommand('formatBlock', false, heading.value);
+      syncValue();
+      heading.value = 'p';
+    });
+    toolbar.appendChild(heading);
+
+    var commands = [
+      ['bold', '<strong>B</strong>', 'Bold'],
+      ['italic', '<em>I</em>', 'Italic'],
+      ['underline', '<u>U</u>', 'Underline'],
+      ['strikeThrough', '<s>S</s>', 'Strikethrough']
+    ];
+    commands.forEach(function(item) { addButton(item[1], item[2], item[0]); });
+    addSeparator();
+    addButton('• List', 'Bulleted list', 'insertUnorderedList');
+    addButton('1. List', 'Numbered list', 'insertOrderedList');
+    addButton('❝', 'Block quote', 'formatBlock', 'blockquote');
+    addButton('―', 'Horizontal line', 'insertHorizontalRule');
+    addSeparator();
+    addButton('↶', 'Undo', 'undo');
+    addButton('↷', 'Redo', 'redo');
+    addButton('⇤', 'Outdent', 'outdent');
+    addButton('⇥', 'Indent', 'indent');
+    addButton('≡', 'Align left', 'justifyLeft');
+    addButton('≣', 'Align center', 'justifyCenter');
+    addButton('≡', 'Align right', 'justifyRight');
+    addSeparator();
+
+    var linkButton = document.createElement('button');
+    linkButton.type = 'button';
+    linkButton.className = 'aa-native-editor__button';
+    linkButton.textContent = 'Link';
+    linkButton.title = 'Insert link';
+    linkButton.addEventListener('mousedown', function(event) {
+      event.preventDefault();
+      var url = window.prompt('Enter the link URL');
+      if (!url) return;
+      editor.focus();
+      document.execCommand('createLink', false, url);
+      syncValue();
+    });
+    toolbar.appendChild(linkButton);
+    addButton('Unlink', 'Remove link', 'unlink');
+    addButton('Clear', 'Clear formatting', 'removeFormat');
+
+    var uploadInput = document.createElement('input');
+    uploadInput.type = 'file';
+    uploadInput.multiple = true;
+    uploadInput.accept = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip';
+    uploadInput.className = 'aa-native-editor__file-input';
+    var uploadButton = document.createElement('button');
+    uploadButton.type = 'button';
+    uploadButton.className = 'aa-native-editor__button aa-native-editor__upload';
+    uploadButton.textContent = 'Upload file';
+    uploadButton.title = 'Upload and insert images or documents';
+    uploadButton.addEventListener('mousedown', function() { saveSelection(); });
+    uploadButton.addEventListener('click', function() { uploadInput.click(); });
+    toolbar.appendChild(uploadButton);
+
+    var status = document.createElement('span');
+    status.className = 'aa-native-editor__status';
+    toolbar.appendChild(status);
+
+    uploadInput.addEventListener('change', function() {
+      var files = Array.prototype.slice.call(uploadInput.files || []);
+      if (!files.length) return;
+      if (!(window.ActiveStorage && window.ActiveStorage.DirectUpload)) {
+        status.textContent = 'Upload service unavailable';
+        status.classList.add('is-error');
+        return;
+      }
+
+      status.classList.remove('is-error');
+      status.textContent = 'Uploading…';
+      var remaining = files.length;
+      files.forEach(function(file) {
+        var upload = new window.ActiveStorage.DirectUpload(file, '/rails/active_storage/direct_uploads');
+        upload.create(function(error, blob) {
+          if (error) {
+            status.textContent = 'Upload failed: ' + error;
+            status.classList.add('is-error');
+            return;
+          }
+          var csrf = document.querySelector('meta[name="csrf-token"]');
+          fetch('/admin/editor_uploads', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': csrf ? csrf.content : ''
+            },
+            body: JSON.stringify({ signed_id: blob.signed_id })
+          }).then(function(response) {
+            return response.json().then(function(data) {
+              if (!response.ok) throw new Error(data.error || 'Could not save upload');
+              return data;
+            });
+          }).then(function(data) {
+            var safeName = String(data.filename || file.name)
+              .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            editor.focus();
+            restoreSelection();
+            if ((data.content_type || file.type || '').indexOf('image/') === 0) {
+              document.execCommand('insertHTML', false, '<img src="' + data.url + '" alt="' + safeName + '">');
+            } else {
+              document.execCommand('insertHTML', false, '<a href="' + data.url + '" target="_blank" rel="noopener">' + safeName + '</a>');
+            }
+            syncValue();
+            remaining -= 1;
+            if (remaining === 0) {
+              status.textContent = files.length === 1 ? 'File uploaded' : files.length + ' files uploaded';
+              window.setTimeout(function() { status.textContent = ''; }, 3000);
+            }
+          }).catch(function(uploadError) {
+            status.textContent = 'Upload failed: ' + uploadError.message;
+            status.classList.add('is-error');
+          });
+        });
+      });
+      uploadInput.value = '';
+    });
+
+    editor.addEventListener('input', syncValue);
+    editor.addEventListener('keyup', saveSelection);
+    editor.addEventListener('mouseup', saveSelection);
+    wrapper.appendChild(toolbar);
+    wrapper.appendChild(editor);
+    wrapper.appendChild(uploadInput);
+    ta.parentNode.insertBefore(wrapper, ta.nextSibling);
+    ta.style.display = 'none';
+  });
+}
+
 function bootRichText() {
-  loadCKEditor(function(){ initCKEditors(); });
+  initNativeRichTextEditors();
 }
 
 // Boot charts after helpers are available
@@ -241,8 +450,8 @@ function observeForRichTextEditors() {
         if (m.addedNodes && m.addedNodes.length) {
           m.addedNodes.forEach(function(n){
             if (n.nodeType === 1) {
-              if (n.matches && n.matches('textarea.aa-richtext')) needsInit = true;
-              if (!needsInit && n.querySelector && n.querySelector('textarea.aa-richtext')) needsInit = true;
+              if (n.matches && n.matches('textarea:not(.aa-plain-text)')) needsInit = true;
+              if (!needsInit && n.querySelector && n.querySelector('textarea:not(.aa-plain-text)')) needsInit = true;
             }
           });
         }
@@ -280,6 +489,9 @@ $(document).ready(function () {
         var $link = $(this);
         var method = ($link.attr('data-method') || '').toUpperCase();
         if (!method) return;
+        // GET links should use normal browser navigation. HTML forms only
+        // support GET/POST and Rack does not treat _method=GET as an override.
+        if (method === 'GET') return;
         var confirmMsg = $link.attr('data-confirm');
         if (confirmMsg && !window.confirm(confirmMsg)) {
           e.preventDefault();

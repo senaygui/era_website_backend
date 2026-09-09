@@ -130,7 +130,7 @@ ActiveAdmin.register PerformanceReport do
       f.input :description
       f.input :is_new
       f.input :meta_title
-      f.input :meta_description
+      f.input :meta_description, input_html: { class: "aa-plain-text" }
       f.input :status, as: :select, collection: %w[draft published archived]
       f.input :published_by
       f.input :updated_by

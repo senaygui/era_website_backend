@@ -45,6 +45,7 @@ ActiveAdmin.register AboutUs do
       f.input :values_title, label: "Core Values Title"
       f.input :values, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.values.is_a?(Array) ? f.object.values.map { |v| "#{v['title']}|#{v['description']}" }.join("\n") : (f.object.values.is_a?(String) ? f.object.values : "")
       }, hint: "Format: Value Title|Description (one per line)"
     end
@@ -87,24 +88,27 @@ ActiveAdmin.register AboutUs do
       f.input :achievements_description, label: "Major Achievements Description", as: :text, input_html: { rows: 3 , placeholder: "Provide an overview of the organization's major achievements" }
       f.input :achievements, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.achievements.is_a?(Array) ? f.object.achievements.map { |a| "#{a['stats']}|#{a['title']}|#{a['description']}" }.join("\n") : ""
       }, hint: "Format: Stats|Title|Description (one per line)"
 
       f.input :milestones_description, label: "Milestones Description", as: :text, input_html: { rows: 3 , placeholder: "Provide an overview of the organization's journey and key milestones" }
       f.input :milestones, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.milestones.is_a?(Array) ? f.object.milestones.map { |m| "#{m['year']}|#{m['title']}|#{m['description']}" }.join("\n") : ""
       }, hint: "Format: Year|Title|Description (one per line)"
 
       f.input :partners, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.partners.is_a?(Array) ? f.object.partners.map { |p| "#{p['name']}|#{p['logo_url']}" }.join("\n") : ""
       }, hint: "Format: Name|Logo URL (one per line)"
     end
 
     f.inputs "SEO Information" do
       f.input :meta_title
-      f.input :meta_description, as: :text, input_html: { rows: 3 }
+      f.input :meta_description, as: :text, input_html: { rows: 3, class: "aa-plain-text" }
       f.input :meta_keywords
       f.input :is_published
     end

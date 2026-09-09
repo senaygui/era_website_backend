@@ -15,7 +15,9 @@ module Api
 
       def center_json(center)
         gallery_urls = if center.gallery_images.attached?
-          center.gallery_images.map { |img| url_for(img) }
+          center.gallery_images.map do |img|
+            rails_blob_url(img, host: request.base_url, disposition: "inline")
+          end
         else
           []
         end

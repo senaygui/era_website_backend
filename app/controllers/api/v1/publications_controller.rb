@@ -7,6 +7,12 @@ module Api
         publications = Publication.published.recent
         publications = publications.by_category(params[:category]) if params[:category].present?
         publications = publications.by_year(params[:year]) if params[:year].present?
+        if ActiveModel::Type::Boolean.new.cast(params[:rrc])
+          publications = publications.where(
+            "category ILIKE :term OR title ILIKE :term OR description ILIKE :term",
+            term: "%research%"
+          )
+        end
         if params[:q].present?
           q = "%#{params[:q]}%"
           publications = publications.where("title ILIKE ? OR description ILIKE ?", q, q)

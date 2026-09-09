@@ -66,22 +66,25 @@ ActiveAdmin.register District do
       f.input :district_overview
       f.input :detail_description
       f.input :address
-      f.input :map_embed
+      f.input :map_embed, input_html: { class: "aa-plain-text" }
       f.input :phone_numbers, as: :text,
         input_html: {
           value: f.object.phone_numbers.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one phone number per line"
       f.input :emails, as: :text,
         input_html: {
           value: f.object.emails.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one email per line"
       f.input :social_media_links, as: :text,
         input_html: {
           value: f.object.social_media_links.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one social media link per line"
@@ -89,10 +92,11 @@ ActiveAdmin.register District do
       f.input :gallery_images, as: :file, input_html: { multiple: true }
       f.input :is_published
       f.input :meta_title
-      f.input :meta_description
+      f.input :meta_description, input_html: { class: "aa-plain-text" }
       f.input :meta_keywords, as: :text,
         input_html: {
           value: f.object.meta_keywords.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one meta keyword per line"

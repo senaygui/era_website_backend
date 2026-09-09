@@ -12,6 +12,7 @@ class RoadResearchCenter < ApplicationRecord
   validates :about, presence: true
   validates :singleton_key, inclusion: { in: [ 1 ] }, if: :singleton_key_attribute?
   validates :singleton_key, uniqueness: true, if: :singleton_key_attribute?
+  validate :validate_gallery_images
 
   # Ensure singleton_key always set to 1
   before_validation :ensure_singleton_key, if: :singleton_key_attribute?
@@ -38,5 +39,14 @@ class RoadResearchCenter < ApplicationRecord
 
   def singleton_key_attribute?
     has_attribute?(:singleton_key)
+  end
+
+  def validate_gallery_images
+    gallery_images.each do |image|
+      unless image.content_type.in?(%w[image/jpeg image/png image/webp image/gif])
+        errors.add(:gallery_images, "must be JPEG, PNG, WebP, or GIF files")
+      end
+      errors.add(:gallery_images, "must be smaller than 10 MB") if image.byte_size > 10.megabytes
+    end
   end
 end

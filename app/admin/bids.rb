@@ -55,6 +55,7 @@ ActiveAdmin.register Bid do
       f.input :description, as: :text
       f.input :eligibility, as: :text, input_html: {
         value: f.object.eligibility.to_json,
+        class: "aa-plain-text",
         hint: 'JSON array of eligibility criteria, e.g., ["Criterion 1", "Criterion 2"]'
       }
       f.input :contact_person

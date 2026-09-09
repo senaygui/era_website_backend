@@ -67,13 +67,13 @@ controller do
       f.input :project_manager
       f.input :objectives, as: :text
       f.input :scope, as: :text
-      f.input :milestones, as: :text, input_html: { value: f.object.milestones.to_json, hint: "JSON array of milestone objects with title, description, date, and completed fields" }
-      f.input :challenges, as: :text, input_html: { value: f.object.challenges.to_json, hint: "JSON array of challenge objects with title and description fields" }
+      f.input :milestones, as: :text, input_html: { value: f.object.milestones.to_json, class: "aa-plain-text", hint: "JSON array of milestone objects with title, description, date, and completed fields" }
+      f.input :challenges, as: :text, input_html: { value: f.object.challenges.to_json, class: "aa-plain-text", hint: "JSON array of challenge objects with title and description fields" }
       f.input :images, as: :file, input_html: { multiple: true }
       f.input :documents, as: :file, input_html: { multiple: true }
       f.input :is_published
       f.input :meta_title
-      f.input :meta_description
+      f.input :meta_description, input_html: { class: "aa-plain-text" }
       f.input :meta_keywords
     end
     f.actions

@@ -127,8 +127,9 @@ ActiveAdmin.setup do |config|
   # This setting changes the http method used when rendering the
   # link. For example :get, :delete, :put, etc..
   #
-  # Use GET so logout still works when Rails UJS or Turbo is unavailable.
-  config.logout_link_method = :get
+  # Devise exposes logout as DELETE. Turbo/Rails UJS and the local fallback
+  # below all support this method consistently.
+  config.logout_link_method = :delete
 
   # == Root
   #

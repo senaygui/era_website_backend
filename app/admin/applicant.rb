@@ -67,6 +67,7 @@ ActiveAdmin.register Applicant do
       f.input :current_position
       f.input :skills, as: :text, input_html: {
         value: f.object.skills&.join("\n"),
+        class: "aa-plain-text",
         rows: 5
       }, hint: "Enter one skill per line"
     end

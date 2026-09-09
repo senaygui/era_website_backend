@@ -51,6 +51,7 @@ ActiveAdmin.register Vacancy do
       f.input :requirements, as: :text,
         input_html: {
           value: f.object.requirements.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one requirement per line"
@@ -60,6 +61,7 @@ ActiveAdmin.register Vacancy do
       f.input :responsibilities, as: :text,
         input_html: {
           value: f.object.responsibilities.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one responsibility per line"
@@ -69,6 +71,7 @@ ActiveAdmin.register Vacancy do
       f.input :benefits, as: :text,
         input_html: {
           value: f.object.benefits.join("\n"),
+          class: "aa-plain-text",
           rows: 5
         },
         hint: "Enter one benefit per line"

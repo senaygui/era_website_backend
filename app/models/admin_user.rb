@@ -4,6 +4,7 @@ class AdminUser < ApplicationRecord
   devise :database_authenticatable,
          :recoverable, :rememberable, :validatable, :trackable
   has_one_attached :photo, dependent: :destroy
+  has_many_attached :editor_files, dependent: :purge_later
 
     # #validations
     # validates :username , :presence => true,:length => { :within => 2..50 }
@@ -31,4 +32,3 @@ class AdminUser < ApplicationRecord
         [ first_name, middle_name.presence, last_name.presence ].compact.join(" ")
       end
 end
-

@@ -66,10 +66,12 @@ ActiveAdmin.register Event do
       f.input :registration_required
       f.input :agenda, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.agenda&.join("\n")
       }, hint: "Add each agenda item on a new line"
       f.input :speakers, as: :text, input_html: {
         rows: 5,
+        class: "aa-plain-text",
         value: f.object.speakers&.join("\n")
       }, hint: "Add each speaker on a new line"
     end
@@ -82,7 +84,7 @@ ActiveAdmin.register Event do
 
     f.inputs "SEO Information" do
       f.input :meta_title
-      f.input :meta_description
+      f.input :meta_description, input_html: { class: "aa-plain-text" }
       f.input :meta_keywords
     end
 

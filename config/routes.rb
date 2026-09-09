@@ -35,6 +35,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       # Add your API endpoints here
       # resources :admin_users, only: [ :index, :show, :update, :destroy ]
+      get "search", to: "search#index"
+      get "youtube/latest", to: "youtube#latest"
       resources :news, only: [ :index, :show ], param: :slug
       resources :events, only: [ :index, :show ] do
         collection do
@@ -118,5 +120,13 @@ Rails.application.routes.draw do
   end
 
   devise_for :admin_users, ActiveAdmin::Devise.config
+  devise_scope :admin_user do
+    # Compatibility for cached/legacy Active Admin assets that submit logout
+    # as POST. The Devise scope supplies the required admin_user mapping.
+    post "/admin/logout", to: "active_admin/devise/sessions#destroy"
+  end
+  namespace :admin do
+    resources :editor_uploads, only: :create
+  end
   ActiveAdmin.routes(self)
 end
