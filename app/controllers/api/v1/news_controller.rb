@@ -19,8 +19,7 @@ module Api
       def show
         Rails.logger.info "Processing news show request for slug: #{params[:slug]}"
         begin
-          @news = News.find_by!(slug: params[:slug])
-          @news.increment_view_count
+          @news = News.published.where("slug = :slug OR legacy_slugs @> ARRAY[:slug]::varchar[]", slug: params[:slug]).first!
           Rails.logger.info "Found news article: #{@news.title}"
           render json: news_attributes(@news)
         rescue ActiveRecord::RecordNotFound
@@ -54,6 +53,7 @@ module Api
         {
           id: news.id,
           slug: news.slug,
+          legacy_slugs: news.legacy_slugs,
           title: news.title,
           content: news.content,
           excerpt: news.excerpt,
@@ -63,8 +63,13 @@ module Api
           is_featured: news.is_featured,
           view_count: news.view_count,
           author: news.author,
+          meta_title: news.meta_title,
+          meta_description: news.meta_description,
+          meta_keywords: news.meta_keywords,
           image_url: image_url,
           thumbnail_url: thumb_url,
+          youtube_url: news.youtube_url,
+          youtube_embed_url: news.youtube_embed_url,
           created_at: news.created_at,
           updated_at: news.updated_at
         }

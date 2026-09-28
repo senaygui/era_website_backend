@@ -3,7 +3,7 @@ module Api
     class AboutController < Api::ApiController
       def index
         @about = AboutUs.instance
-        
+
         render json: {
           title: @about.title,
           subtitle: @about.subtitle,
@@ -11,7 +11,7 @@ module Api
           mission: @about.mission,
           vision: @about.vision,
           values_title: @about.values_title,
-          values: @about.values.is_a?(Array) ? @about.values : @about.values_list,
+          values: core_values,
           history: @about.history,
           team_description: @about.team_description,
           team_members: @about.team_members.map { |m| {
@@ -40,6 +40,22 @@ module Api
             keywords: @about.meta_keywords
           }
         }
+      end
+
+      private
+
+      def core_values
+        return @about.values_list if @about.about_core_values.empty?
+
+        @about.about_core_values.map do |value|
+          {
+            id: value.id,
+            title: value.title,
+            description: value.description,
+            position: value.position,
+            image_url: value.image.attached? ? url_for(value.image) : nil
+          }
+        end
       end
     end
   end

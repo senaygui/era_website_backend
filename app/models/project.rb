@@ -1,4 +1,9 @@
 class Project < ApplicationRecord
+  include SeoMetadataSync
+  include FriendlySlug
+
+  has_friendly_slug source: :title, fallback: "project"
+
   has_many_attached :images
   has_many_attached :documents
   
@@ -17,6 +22,9 @@ class Project < ApplicationRecord
   
   # Handle JSON attributes
   before_save :parse_json_attributes
+  syncs_seo_metadata title: :title,
+                      description: [ :description, :objectives, :scope ],
+                      keywords: [ :status, :location ]
   
   def parse_json_attributes
     # Parse milestones if it's a string
@@ -52,7 +60,7 @@ class Project < ApplicationRecord
   end
   
   def self.ransackable_attributes(auth_object = nil)
-    %w[title description status location contractor project_manager created_at updated_at is_published budget start_date end_date is_road_research_center_project]
+    %w[title slug description status location contractor project_manager created_at updated_at is_published budget start_date end_date is_road_research_center_project]
   end
 
   def self.ransackable_associations(auth_object = nil)

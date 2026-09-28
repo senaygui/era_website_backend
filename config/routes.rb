@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # Active Storage's default direct-upload endpoint is public. Route it through
+  # an authenticated controller before Active Storage draws its fallback route.
+  post "/rails/active_storage/direct_uploads", to: "admin/direct_uploads#create"
+
   # Admin POST fallbacks with method override constraints
   # Route POST + _method=delete to destroy; otherwise to update
   [
@@ -14,7 +18,12 @@ Rails.application.routes.draw do
     :about_us,
     :bids,
     :admin_users,
-    :road_research_centers
+    :road_research_centers,
+    :road_research_technologies,
+    :road_research_laboratory_services,
+    :road_research_gallery_images,
+    :urgent_notices,
+    :featured_sections
   ].each do |res|
     post "/admin/#{res}/:id", to: "admin/#{res}#destroy", constraints: ->(req) { req.params['_method'].to_s.downcase == 'delete' }
     post "/admin/#{res}/:id", to: "admin/#{res}#update",  constraints: ->(req) { req.params['_method'].to_s.downcase != 'delete' }
@@ -30,6 +39,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root to: "admin/dashboard#index"
+  get "share/news/:slug", to: "news_shares#show", as: :share_news
 
   namespace :api do
     namespace :v1 do
@@ -37,6 +47,8 @@ Rails.application.routes.draw do
       # resources :admin_users, only: [ :index, :show, :update, :destroy ]
       get "search", to: "search#index"
       get "youtube/latest", to: "youtube#latest"
+      resources :featured_sections, only: :index
+      resources :urgent_notices, only: :index
       resources :news, only: [ :index, :show ], param: :slug
       resources :events, only: [ :index, :show ] do
         collection do
@@ -115,7 +127,7 @@ Rails.application.routes.draw do
       end
 
       # Applicants endpoints
-      resources :applicants
+      resources :applicants, only: :create
     end
   end
 

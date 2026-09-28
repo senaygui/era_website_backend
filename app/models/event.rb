@@ -1,4 +1,4 @@
-require 'securerandom'
+require "securerandom"
 
 class Event < ApplicationRecord
   # ActiveStorage
@@ -13,6 +13,7 @@ class Event < ApplicationRecord
   validates :end_date, presence: true
   validates :location, presence: true
   validates :event_type, presence: true
+  validates :excerpt, length: { maximum: 256 }, allow_blank: true
   validate :end_date_after_start_date
   validate :image_content_type
 
@@ -23,10 +24,15 @@ class Event < ApplicationRecord
   # Callbacks
   before_validation :generate_slug, on: :create
   before_validation :set_default_status, on: :create
+  include SeoMetadataSync
+  syncs_seo_metadata title: :title,
+                      description: [ :excerpt, :description ],
+                      keywords: [ :event_type, :location ]
 
   # Scopes
   scope :published, -> { where(is_published: true) }
   scope :featured, -> { where(is_featured: true) }
+  scope :not_ended, -> { where("end_date >= ?", Time.current) }
   scope :upcoming, -> { where("start_date > ?", Time.current).order(start_date: :asc) }
   scope :ongoing, -> { where("start_date <= ? AND end_date >= ?", Time.current, Time.current) }
   scope :past, -> { where("end_date < ?", Time.current).order(start_date: :desc) }

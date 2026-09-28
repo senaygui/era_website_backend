@@ -135,6 +135,57 @@
   text-align: left;
 }
 
+textarea.aa-tiptap-input.aa-tiptap__source {
+  display: block !important;
+  width: 100% !important;
+  min-height: 260px;
+  margin: 0 !important;
+  padding: 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #111827;
+  color: #f9fafb;
+  font: 400 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  resize: vertical;
+}
+
+.news-editor-form fieldset.inputs > ol > li {
+  display: grid;
+  grid-template-columns: minmax(150px, 18%) minmax(0, 1fr);
+  align-items: start;
+  column-gap: 18px;
+}
+
+.news-editor-form fieldset.inputs > ol > li > label {
+  width: auto;
+  padding-top: 9px;
+}
+
+.news-editor-form fieldset.inputs > ol > li > input:not([type="checkbox"]),
+.news-editor-form fieldset.inputs > ol > li > textarea,
+.news-editor-form fieldset.inputs > ol > li > select,
+.news-editor-form fieldset.inputs > ol > li > .aa-tiptap,
+.news-editor-form fieldset.inputs > ol > li > .select2-container,
+.news-editor-form fieldset.inputs > ol > li > .inline-hints,
+.news-editor-form fieldset.inputs > ol > li > .inline-errors {
+  grid-column: 2;
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+}
+
+.news-editor-form .current-news-image-preview {
+  display: block;
+  width: 100%;
+  width: 420px;
+  max-height: 240px;
+  margin: 8px 0;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #f9fafb;
+}
+
 .aa-tiptap__content .ProseMirror:focus {
   box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
@@ -200,6 +251,10 @@
 }
 
 @media (max-width: 768px) {
+  .news-editor-form fieldset.inputs > ol > li {
+    display: block;
+  }
+
   .aa-tiptap__toolbar {
     align-items: stretch;
   }

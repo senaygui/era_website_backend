@@ -44,7 +44,7 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 
 
-gem "devise"
+gem "devise", "~> 4.9.4" # ActiveAdmin 3.x requires Devise < 5.
 gem "activeadmin", "~> 3.3"
 # Plus integrations with:
 gem "cancancan"
@@ -59,6 +59,8 @@ gem "active_storage_drag_and_drop"
 gem "active_storage_validations"
 gem "acts-as-taggable-on"
 gem "rack-cors"
+gem "rack-attack"
+gem "json", "~> 2.21.2" # Sprockets 4.2 passes JSON 2.x parser options removed in JSON 3.
 gem "active_model_serializers", "~> 0.10"
 group :development, :test do
   gem "capistrano", "~> 3.11"

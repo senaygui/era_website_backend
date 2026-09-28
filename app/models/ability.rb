@@ -50,7 +50,7 @@ class Ability
       ]
       cannot :manage, AdminUser
     else
-      can :read, :all
+      cannot :manage, :all
     end
   end
 end

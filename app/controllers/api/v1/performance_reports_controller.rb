@@ -26,7 +26,6 @@ module Api
         doc = report.documents.attached? ? report.documents.first : nil
         return render json: { error: "File not available" }, status: :not_found unless doc
 
-        PerformanceReport.increment_counter(:download_count, report.id)
         redirect_to rails_blob_url(doc, disposition: 'inline')
       end
 

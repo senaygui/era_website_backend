@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_27_020100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
+
+  create_table "about_core_values", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "about_us_id", null: false
+    t.string "title", null: false
+    t.text "description", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["about_us_id", "position"], name: "index_about_core_values_on_about_us_id_and_position"
+    t.index ["about_us_id"], name: "index_about_core_values_on_about_us_id"
+  end
 
   create_table "about_us", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
@@ -179,8 +190,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.string "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", null: false
     t.index ["is_published"], name: "index_districts_on_is_published"
     t.index ["name"], name: "index_districts_on_name", unique: true
+    t.index ["slug"], name: "index_districts_on_slug", unique: true
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -217,6 +230,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.index ["status"], name: "index_events_on_status"
   end
 
+  create_table "featured_sections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "cta_label"
+    t.string "cta_url"
+    t.string "page_keys", default: ["all"], null: false, array: true
+    t.string "placement", default: "after_content", null: false
+    t.integer "display_order", default: 0, null: false
+    t.boolean "is_published", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "section_position", default: 1, null: false
+    t.index ["is_published", "placement", "display_order"], name: "index_featured_sections_for_display"
+    t.index ["is_published", "section_position", "display_order"], name: "index_featured_sections_by_page_position"
+    t.index ["page_keys"], name: "index_featured_sections_on_page_keys", using: :gin
+  end
+
   create_table "news", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "content", null: false
@@ -234,9 +264,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.string "meta_keywords", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "youtube_url"
+    t.string "legacy_slugs", default: [], null: false, array: true
     t.index ["category"], name: "index_news_on_category"
     t.index ["is_featured"], name: "index_news_on_is_featured"
     t.index ["is_published"], name: "index_news_on_is_published"
+    t.index ["legacy_slugs"], name: "index_news_on_legacy_slugs", using: :gin
     t.index ["published_date"], name: "index_news_on_published_date"
     t.index ["slug"], name: "index_news_on_slug", unique: true
   end
@@ -287,9 +320,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.datetime "updated_at", null: false
     t.boolean "is_road_research_center", default: false
     t.boolean "is_road_research_center_project", default: false
+    t.string "slug", null: false
     t.index ["is_road_research_center"], name: "index_projects_on_is_road_research_center"
     t.index ["is_road_research_center_project"], name: "index_projects_on_is_road_research_center_project"
     t.index ["location"], name: "index_projects_on_location"
+    t.index ["slug"], name: "index_projects_on_slug", unique: true
     t.index ["status"], name: "index_projects_on_status"
     t.index ["title"], name: "index_projects_on_title"
   end
@@ -352,9 +387,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "singleton_key", default: 1, null: false
+    t.string "hero_headline"
+    t.text "hero_subheadline"
+    t.text "vision"
+    t.text "mission"
+    t.text "objectives"
+    t.text "organizational_structure"
+    t.string "contact_address"
+    t.string "contact_phone"
+    t.string "contact_email"
+    t.string "contact_hours"
+    t.string "contact_map_url"
     t.index ["is_published"], name: "index_road_research_centers_on_is_published"
     t.index ["singleton_key"], name: "idx_rrc_singleton", unique: true
     t.index ["title"], name: "index_road_research_centers_on_title"
+  end
+
+  create_table "road_research_gallery_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "road_research_center_id", null: false
+    t.string "title"
+    t.text "caption"
+    t.integer "position", default: 0, null: false
+    t.boolean "is_published", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["road_research_center_id", "position"], name: "idx_rrc_gallery_position"
+    t.index ["road_research_center_id"], name: "idx_rrc_gallery_center"
   end
 
   create_table "road_research_laboratory_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -425,6 +483,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.index ["about_us_id"], name: "index_team_members_on_about_us_id"
   end
 
+  create_table "urgent_notices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "notice_title", null: false
+    t.text "notice_short_description", null: false
+    t.string "link_url"
+    t.boolean "is_published", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expires_at"
+    t.index ["expires_at"], name: "index_urgent_notices_on_expires_at"
+    t.index ["is_published", "created_at"], name: "index_urgent_notices_on_is_published_and_created_at"
+  end
+
   create_table "vacancies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.string "department", null: false
@@ -449,9 +519,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_202500) do
     t.index ["title"], name: "index_vacancies_on_title"
   end
 
+  add_foreign_key "about_core_values", "about_us"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "applicants", "vacancies", on_delete: :cascade
+  add_foreign_key "road_research_gallery_images", "road_research_centers"
   add_foreign_key "road_research_laboratory_services", "road_research_centers"
   add_foreign_key "road_research_technologies", "road_research_centers"
   add_foreign_key "taggings", "tags"

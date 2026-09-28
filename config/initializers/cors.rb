@@ -8,18 +8,24 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "http://localhost:3000",
-            "http://localhost:8080",
-            "http://127.0.0.1:8080",
-            "http://localhost:8090",
-            "https://prod-era.era.gov.et",
-            "https://prod-era.era.gov.et:8081",
-            /\Ahttp:\/\/196\.189\.55\.254(?::\d+)?\z/
+    allowed_origins = if Rails.env.production?
+      ENV.fetch("CORS_ALLOWED_ORIGINS", "https://prod-era.era.gov.et").split(",").map(&:strip)
+    else
+      %w[http://localhost:8080 http://127.0.0.1:8080]
+    end
 
-    resource "*",
+    origins(*allowed_origins)
+
+    resource "/api/*",
       headers: :any,
-      methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
+      methods: [ :get, :post, :options, :head ],
       credentials: false,
-      expose: [ "Authorization" ]
+      max_age: 600
+
+    resource "/rails/active_storage/*",
+      headers: :any,
+      methods: [ :get, :head, :options ],
+      credentials: false,
+      max_age: 600
   end
 end

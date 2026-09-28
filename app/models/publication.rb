@@ -2,6 +2,8 @@
   #   errors.add(:documents, "can't be blank") unless documents.attached?
   # end
 class Publication < ApplicationRecord
+  include SeoMetadataSync
+
   # ActiveStorage attachments
   has_many_attached :documents
   has_one_attached :thumbnail
@@ -32,6 +34,9 @@ class Publication < ApplicationRecord
   # Callbacks
   before_validation :set_year_from_publish_date
   before_validation :normalize_authors
+  syncs_seo_metadata title: :title,
+                      description: :description,
+                      keywords: [ :category, :authors ]
 
   # For Postgres array support (if not using Rails 5+ attributes API)
   # serialize :authors, Array

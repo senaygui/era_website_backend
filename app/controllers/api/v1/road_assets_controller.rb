@@ -26,7 +26,6 @@ module Api
         doc = asset.documents.attached? ? asset.documents.first : nil
         return render json: { error: "File not available" }, status: :not_found unless doc
 
-        RoadAsset.increment_counter(:download_count, asset.id)
         redirect_to rails_blob_url(doc, disposition: 'inline')
       end
 

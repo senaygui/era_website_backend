@@ -1,6 +1,13 @@
 class Applicant < ApplicationRecord
   require "csv"
 
+  DOCUMENT_CONTENT_TYPES = %w[
+    application/pdf
+    application/msword
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  ].freeze
+  MAX_OTHER_DOCUMENTS = 5
+
   # Set UUID as primary key
   self.primary_key = :id
 
@@ -30,6 +37,7 @@ class Applicant < ApplicationRecord
   # File validations
   validate :validate_cv_attachment
   validate :validate_cover_letter_attachment
+  validate :validate_other_documents
 
   # Enums
   enum :status, {
@@ -116,8 +124,7 @@ class Applicant < ApplicationRecord
     return unless cv.attached?
 
     # Validate file type
-    unless cv.content_type.in?(%w[application/pdf application/msword
-                                application/vnd.openxmlformats-officedocument.wordprocessingml.document])
+    unless cv.content_type.in?(DOCUMENT_CONTENT_TYPES)
       errors.add(:cv, "must be a PDF or Word document")
     end
 
@@ -131,14 +138,24 @@ class Applicant < ApplicationRecord
     return unless cover_letter.attached?
 
     # Validate file type
-    unless cover_letter.content_type.in?(%w[application/pdf application/msword
-                                         application/vnd.openxmlformats-officedocument.wordprocessingml.document])
+    unless cover_letter.content_type.in?(DOCUMENT_CONTENT_TYPES)
       errors.add(:cover_letter, "must be a PDF or Word document")
     end
 
     # Validate file size (2MB max)
     if cover_letter.byte_size > 2.megabytes
       errors.add(:cover_letter, "should be less than 2MB")
+    end
+  end
+
+  def validate_other_documents
+    if other_documents.attachments.size > MAX_OTHER_DOCUMENTS
+      errors.add(:other_documents, "cannot contain more than #{MAX_OTHER_DOCUMENTS} files")
+    end
+
+    other_documents.each do |document|
+      errors.add(:other_documents, "must contain only PDF or Word documents") unless document.content_type.in?(DOCUMENT_CONTENT_TYPES)
+      errors.add(:other_documents, "must each be smaller than 5MB") if document.byte_size > 5.megabytes
     end
   end
 end

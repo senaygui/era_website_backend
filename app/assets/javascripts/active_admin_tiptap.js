@@ -48,6 +48,7 @@ function initializeEditor(textarea) {
     editorProps: {
       attributes: {
         class: "aa-tiptap__editable",
+        contenteditable: "true",
         "aria-label": textarea.getAttribute("aria-label") || "Rich text content",
       },
     },
@@ -125,6 +126,29 @@ function initializeEditor(textarea) {
   addButton("Unlink", "Remove link", () => editor.chain().focus().unsetLink().run())
   addButton("Clear", "Clear formatting", () => editor.chain().focus().unsetAllMarks().clearNodes().run())
 
+  let sourceMode = false
+  const source = button("HTML", "Edit HTML source", () => {
+    sourceMode = !sourceMode
+    if (sourceMode) {
+      textarea.value = editor.isEmpty ? "" : editor.getHTML()
+      textarea.hidden = false
+      textarea.classList.add("aa-tiptap__source")
+      content.hidden = true
+      editor.setEditable(false)
+    } else {
+      editor.commands.setContent(textarea.value || "", { emitUpdate: false })
+      textarea.hidden = true
+      textarea.classList.remove("aa-tiptap__source")
+      content.hidden = false
+      editor.setEditable(true)
+      editor.commands.focus()
+    }
+    source.classList.toggle("is-active", sourceMode)
+    source.setAttribute("aria-pressed", String(sourceMode))
+  }, () => sourceMode)
+  controls.push(source)
+  toolbar.appendChild(source)
+
   const fileInput = document.createElement("input")
   fileInput.type = "file"
   fileInput.multiple = true
@@ -200,7 +224,7 @@ function initializeEditor(textarea) {
   editor.on("selectionUpdate", updateControls)
   editor.on("transaction", updateControls)
   textarea.closest("form")?.addEventListener("submit", () => {
-    textarea.value = editor.isEmpty ? "" : editor.getHTML()
+    if (!sourceMode) textarea.value = editor.isEmpty ? "" : editor.getHTML()
   })
   instances.set(textarea, editor)
   updateControls()

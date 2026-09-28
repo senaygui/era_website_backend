@@ -3,7 +3,7 @@ module Api
     class ApplicantsController < BaseController
       # POST /api/v1/applicants
       def create
-        @applicant = Applicant.new(applicant_params)
+        @applicant = Applicant.new(applicant_params.merge(status: :applied))
 
         # Handle file attachments if provided
         if params.dig(:applicant, :cv).present?
@@ -42,9 +42,7 @@ module Api
           :current_employer,
           :current_position,
           :vacancy_id,
-          :status,
           :cover_letter_text,
-          :notes,
           skills: [],
           other_documents: []
         )

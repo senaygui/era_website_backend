@@ -1,4 +1,6 @@
 class AboutUs < ApplicationRecord
+  include SeoMetadataSync
+
   # Set the table name explicitly since Rails would expect 'about_uses'
   self.table_name = "about_us"
   # ActiveStorage attachments
@@ -11,10 +13,12 @@ class AboutUs < ApplicationRecord
 
   # Associations
   has_many :team_members, dependent: :destroy
+  has_many :about_core_values, dependent: :destroy
   accepts_nested_attributes_for :team_members, allow_destroy: true
+  accepts_nested_attributes_for :about_core_values, allow_destroy: true
 
   def self.ransackable_associations(auth_object = nil)
-    [ "hero_image_attachment", "hero_image_blob", "history_image_attachment", "history_image_blob", "mission_image_attachment", "mission_image_blob", "org_structure_image_attachment", "org_structure_image_blob", "team_images_attachments", "team_images_blobs", "vision_image_attachment", "vision_image_blob", "team_members" ]
+    [ "about_core_values", "hero_image_attachment", "hero_image_blob", "history_image_attachment", "history_image_blob", "mission_image_attachment", "mission_image_blob", "org_structure_image_attachment", "org_structure_image_blob", "team_images_attachments", "team_images_blobs", "vision_image_attachment", "vision_image_blob", "team_members" ]
   end
 
   def self.ransackable_attributes(auth_object = nil)
@@ -25,6 +29,10 @@ class AboutUs < ApplicationRecord
   # Validations
   validates :title, presence: true
   validates :description, presence: true
+
+  syncs_seo_metadata title: :title,
+                      description: [ :description, :subtitle ],
+                      keywords: [ :title, :subtitle ]
 
   # Validate image content types
   validate :validate_image_content_types

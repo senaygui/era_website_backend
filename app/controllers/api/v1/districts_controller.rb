@@ -7,7 +7,7 @@ module Api
         @districts = District.where(is_published: true)
                            .order(created_at: :desc)
                            .page(params[:page])
-                           .per(params[:per_page] || 10)
+                           .per(per_page)
 
         render json: {
           districts: @districts.map { |district| district_with_urls(district) },
@@ -54,7 +54,7 @@ module Api
       private
 
       def set_district
-        @district = District.find_by(id: params[:id])
+        @district = District.where(is_published: true).find_by_slug_or_id(params[:id])
       rescue ActiveRecord::RecordNotFound
         @district = nil
       end
@@ -78,6 +78,10 @@ module Api
           meta_keywords: [],
           gallery_images: []
         )
+      end
+
+      def per_page
+        params.fetch(:per_page, 10).to_i.clamp(1, 100)
       end
 
       def district_with_urls(district)

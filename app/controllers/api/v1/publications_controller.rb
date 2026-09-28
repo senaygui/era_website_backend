@@ -33,8 +33,6 @@ module Api
         doc = publication.documents.attached? ? publication.documents.first : nil
         return render json: { error: "File not available" }, status: :not_found unless doc
 
-        # Atomic counter increment
-        Publication.increment_counter(:download_count, publication.id)
         redirect_to rails_blob_url(doc, disposition: 'inline')
       end
 

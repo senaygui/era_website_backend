@@ -1,9 +1,8 @@
 ActiveAdmin.register News do
-
   menu parent: "Events & News", priority: 1
   permit_params :title, :content, :excerpt, :published_date, :is_published,
                 :category, :is_featured, :author, :meta_title, :meta_description,
-                :image, :tag_list, :meta_keywords
+                :image, :tag_list, :meta_keywords, :youtube_url
 
   # Rely on default update action
 
@@ -31,24 +30,60 @@ ActiveAdmin.register News do
   filter :is_featured
   filter :created_at
 
-  form do |f|
+  form html: { class: "news-editor-form" } do |f|
+    f.semantic_errors
+
     f.inputs "News Details" do
       f.input :title
-      f.input :content, as: :tiptap
-      f.input :excerpt, as: :text, input_html: { rows: 3 }
-      f.input :image, as: :file
+      f.input :content,
+              as: :tiptap,
+              hint: "Use the visual editor or select HTML to edit the source of existing content."
+      f.input :excerpt,
+              as: :text,
+              label: "Short description",
+              hint: "Maximum 256 characters. Leave blank when creating to generate it from the content.",
+              input_html: { rows: 4, maxlength: 256, class: "aa-plain-text" }
+      image_hint = if f.object.image.attached?
+        image_tag(
+          rails_blob_path(f.object.image, only_path: true),
+          alt: "Current news image",
+          class: "current-news-image-preview"
+        )
+      else
+        "Upload the main news image."
+      end
+      f.input :image,
+              as: :file,
+              label: f.object.image.attached? ? "Replace image" : "Main image",
+              input_html: { accept: "image/jpeg,image/png,image/webp,image/gif" },
+              hint: image_hint
+      f.input :youtube_url,
+              label: "YouTube video URL",
+              hint: "Optional. Featured news will play this video in the homepage hero. Supports youtube.com and youtu.be URLs."
       f.input :published_date, as: :date_picker
-      f.input :category
-      f.input :tag_list, input_html: { value: f.object.tag_list.join(', ') }
+      f.input :category,
+              as: :select,
+              collection: News::CATEGORIES,
+              include_blank: "Select a category"
+      f.input :tag_list,
+              hint: "Separate multiple tags with commas. Example: road safety, bridge, maintenance",
+              input_html: {
+                value: f.object.tag_list.join(", "),
+                placeholder: "road safety, bridge, maintenance"
+              }
       f.input :is_published
       f.input :is_featured
       f.input :author
     end
 
     f.inputs "SEO Settings" do
-      f.input :meta_title
-      f.input :meta_description, as: :text, input_html: { rows: 3, class: "aa-plain-text" }
-      f.input :meta_keywords
+      f.input :meta_title, hint: "Leave blank when creating to use the news title."
+      f.input :meta_description,
+              as: :text,
+              hint: "Leave blank when creating to use the short description or content.",
+              input_html: { rows: 3, class: "aa-plain-text" }
+      f.input :meta_keywords,
+              hint: "Leave blank when creating to use the category and tag list."
     end
 
     f.actions
@@ -58,12 +93,13 @@ ActiveAdmin.register News do
     attributes_table do
       row :title
       row :content
-      row :excerpt
+      row("Short description") { |news| news.excerpt }
       row :image do |news|
         if news.image.attached?
           span image_tag(news.image, size: "150x150", class: "img-corner")
         end
       end
+      row :youtube_url
       row :published_date
       row :category
       row :tags

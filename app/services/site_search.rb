@@ -32,14 +32,16 @@ class SiteSearch
     end
     sources = [
       [News.published, %w[title excerpt content], "News", "/news", :slug],
-      [Project.published, %w[title description location], "Projects", "/projects", :id],
+      [Project.published, %w[title description location], "Projects", "/projects", :slug],
       [Bid.published, %w[title description bid_number category], "Bids", "/bids", nil],
       [Publication.published, %w[title description category], "Publications", "/publications", nil],
-      [Event.published, %w[title description location event_type], "Events", "/events", nil],
+      [Event.published.not_ended, %w[title description location event_type], "Events", "/events", nil],
       [Vacancy.active, %w[title description department location], "Vacancies", "/vacancies", nil],
-      [District.where(is_published: true), %w[name district_overview detail_description], "Districts", "/districts", :id],
+      [District.where(is_published: true), %w[name district_overview detail_description], "Districts", "/districts", :slug],
       [RoadAsset.published, %w[title description category], "Road Assets", "/publications/road-assets", nil],
-      [PerformanceReport.published, %w[title description category], "Performance Rate", "/publications/performance", nil]
+      [PerformanceReport.published, %w[title description category], "Performance Rate", "/publications/performance", nil],
+      [RoadResearchTechnology.where(is_published: true), %w[title description category], "RRC Technologies", "/publications/road-research-center/technology-transfer", nil],
+      [RoadResearchLaboratoryService.where(is_published: true), %w[title description category], "RRC Services", "/publications/road-research-center/technical-supports", nil]
     ].map do |scope, fields, category, path, identifier|
       @terms.each do |term|
         pattern = "%#{ActiveRecord::Base.sanitize_sql_like(term)}%"

@@ -47,7 +47,11 @@ ActiveAdmin.register Event do
 
     f.inputs "Basic Information" do
       f.input :title
-      f.input :excerpt
+      f.input :excerpt,
+              as: :text,
+              label: "Short description",
+              hint: "Maximum 256 characters.",
+              input_html: { rows: 4, maxlength: 256, class: "aa-plain-text" }
       f.input :description, as: :tiptap
       f.input :event_image, as: :file
       f.input :location
@@ -96,7 +100,7 @@ ActiveAdmin.register Event do
     attributes_table do
       row :id
       row :title
-      row :excerpt
+      row("Short description") { |event| event.excerpt }
       row :description
       row :event_image do |event|
         if event.event_image.attached?

@@ -9,6 +9,7 @@ ActiveAdmin.register AboutUs do
                 :is_published, :meta_title, :meta_description, :meta_keywords,
                 :hero_image, :mission_image, :vision_image, :history_image, :org_structure_image,
                 team_images: [],
+                about_core_values_attributes: [ :id, :title, :description, :position, :image, :_destroy ],
                 team_members_attributes: [ :id, :name, :position, :job_title, :description, :image, :_destroy ]
 
   # Index page configuration
@@ -43,11 +44,15 @@ ActiveAdmin.register AboutUs do
 
     f.inputs "Core Values" do
       f.input :values_title, label: "Core Values Title"
-      f.input :values, as: :text, input_html: {
-        rows: 5,
-        class: "aa-plain-text",
-        value: f.object.values.is_a?(Array) ? f.object.values.map { |v| "#{v['title']}|#{v['description']}" }.join("\n") : (f.object.values.is_a?(String) ? f.object.values : "")
-      }, hint: "Format: Value Title|Description (one per line)"
+      f.has_many :about_core_values, allow_destroy: true, new_record: "Add Core Value", heading: false do |value|
+        value.input :title
+        value.input :description, as: :text, input_html: { rows: 3, class: "aa-plain-text" }
+        value.input :position, hint: "Lower numbers appear first."
+        value.input :image,
+                    as: :file,
+                    input_html: { accept: "image/jpeg,image/png,image/webp,image/gif" },
+                    hint: (value.object.persisted? && value.object.image.attached? ? image_tag(value.object.image, size: "160x110", class: "img-corner") : "Upload an image for this value.")
+      end
     end
 
     f.inputs "History & Team" do
@@ -149,20 +154,24 @@ ActiveAdmin.register AboutUs do
       panel "Core Values" do
         attributes_table_for resource do
           row :values_title
-          row :values do |about|
-            if about.values.is_a?(Array)
+          row "Values" do |about|
+            if about.about_core_values.any?
               table do
                 thead do
                   tr do
+                    th "Image"
                     th "Title"
                     th "Description"
+                    th "Order"
                   end
                 end
                 tbody do
-                  about.values.each do |value|
+                  about.about_core_values.each do |value|
                     tr do
-                      td { value["title"] }
-                      td { value["description"] }
+                      td { image_tag(value.image, size: "100x70", class: "img-corner") if value.image.attached? }
+                      td { value.title }
+                      td { value.description }
+                      td { value.position }
                     end
                   end
                 end

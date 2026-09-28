@@ -14,15 +14,19 @@ module Api
       private
 
       def center_json(center)
-        gallery_urls = if center.gallery_images.attached?
-          center.gallery_images.map do |img|
-            rails_blob_url(img, host: request.base_url, disposition: "inline")
-          end
-        else
-          []
+        gallery = center.road_research_gallery_images.published.ordered.includes(image_attachment: :blob).filter_map do |item|
+          next unless item.image.attached?
+
+          {
+            id: item.id,
+            title: item.title,
+            caption: item.caption,
+            position: item.position,
+            image_url: attachment_url(item.image)
+          }
         end
 
-        technologies = center.road_research_technologies.map do |t|
+        technologies = center.road_research_technologies.where(is_published: true).order(:created_at).map do |t|
           {
             id: t.id,
             title: t.title,
@@ -33,7 +37,7 @@ module Api
           }
         end
 
-        laboratory_services = center.road_research_laboratory_services.map do |s|
+        laboratory_services = center.road_research_laboratory_services.where(is_published: true).order(:created_at).map do |s|
           {
             id: s.id,
             title: s.title,
@@ -47,8 +51,24 @@ module Api
         {
           id: center.id,
           title: center.title,
+          hero_headline: center.hero_headline.presence || center.title,
+          hero_subheadline: center.hero_subheadline,
+          hero_image_url: center.hero_image.attached? ? attachment_url(center.hero_image) : nil,
           about: center.about,
-          gallery_images_urls: gallery_urls,
+          vision: center.vision,
+          mission: center.mission,
+          objectives: center.objectives,
+          organizational_structure: center.organizational_structure,
+          organizational_structure_image_url: center.organizational_structure_image.attached? ? attachment_url(center.organizational_structure_image) : nil,
+          contact: {
+            address: center.contact_address,
+            phone: center.contact_phone,
+            email: center.contact_email,
+            hours: center.contact_hours,
+            map_url: center.contact_map_url
+          },
+          gallery: gallery,
+          gallery_images_urls: gallery.map { |item| item[:image_url] },
           technologies: technologies,
           laboratory_services: laboratory_services,
           meta: {
@@ -57,6 +77,10 @@ module Api
             keywords: center.meta_keywords
           }
         }
+      end
+
+      def attachment_url(attachment)
+        rails_blob_url(attachment, host: request.base_url, disposition: "inline")
       end
     end
   end

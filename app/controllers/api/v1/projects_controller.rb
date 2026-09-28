@@ -57,9 +57,11 @@ module Api
       end
 
       def show
-        Rails.logger.info "Processing project show request for id: #{params[:id]}"
+        Rails.logger.info "Processing project show request for slug or id: #{params[:id]}"
         begin
-          @project = Project.published.with_attached_images.with_attached_documents.find(params[:id])
+          scope = Project.published.with_attached_images.with_attached_documents
+          @project = scope.find_by_slug_or_id(params[:id])
+          raise ActiveRecord::RecordNotFound unless @project
           Rails.logger.info "Found project: #{@project.title}"
           render json: project_attributes(@project, include_details: true)
         rescue ActiveRecord::RecordNotFound
@@ -81,6 +83,7 @@ module Api
         
         attributes = {
           id: project.id,
+          slug: project.slug,
           title: project.title,
           description: project.description,
           status: project.status,
