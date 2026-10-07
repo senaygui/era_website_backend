@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_27_020100) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_07_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -171,6 +171,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_27_020100) do
     t.index ["publish_date"], name: "index_bids_on_publish_date"
     t.index ["status"], name: "index_bids_on_status"
     t.index ["type_of_bid"], name: "index_bids_on_type_of_bid"
+  end
+
+  create_table "contact_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "phone"
+    t.string "subject", null: false
+    t.string "department", null: false
+    t.text "message", null: false
+    t.boolean "consent", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_contact_messages_on_created_at"
   end
 
   create_table "districts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -1,0 +1,17 @@
+<% if district.gallery_images.attached? %>
+  <div class="gallery-grid">
+    <% district.gallery_images.each do |attachment| %>
+      <div class="district-gallery-file">
+        <% if attachment.image? %>
+          <%= image_tag attachment, style: "max-width: 200px; max-height: 150px;", alt: attachment.filename.to_s %>
+        <% end %>
+        <p><%= attachment.filename %> (<%= number_to_human_size(attachment.byte_size) %>)</p>
+        <%= link_to "Download", rails_blob_path(attachment, disposition: "attachment") %>
+        <%= link_to "Remove", remove_gallery_image_admin_district_path(district, attachment_id: attachment.id),
+                    method: :post, data: { confirm: "Remove this gallery file?" } %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>No gallery files uploaded.</p>
+<% end %>

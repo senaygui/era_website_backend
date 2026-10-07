@@ -926,6 +926,20 @@ body {
   padding: 20px 0;
 }
 
+.district-gallery-file {
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  img {
+    display: block;
+    object-fit: contain;
+  }
+
+  a + a {
+    margin-left: 12px;
+  }
+}
+
 .gallery-item {
   display: flex;
   justify-content: space-between;

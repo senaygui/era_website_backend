@@ -128,6 +128,7 @@ Rails.application.routes.draw do
 
       # Applicants endpoints
       resources :applicants, only: :create
+      resources :contact_messages, only: :create
     end
   end
 

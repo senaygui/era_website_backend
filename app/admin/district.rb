@@ -1,6 +1,23 @@
 ActiveAdmin.register District do
   permit_params :main_image, :meta_description, :meta_title, :district_overview, :detail_description, :is_published, :name, :address, :published_by, :updated_by, :map_embed, phone_numbers: [], emails: [], social_media_links: [], meta_keywords: [], gallery_images: []
 
+  controller do
+    def update_resource(object, attributes)
+      attributes.each do |values|
+        next unless values.respond_to?(:key?) && values.key?(:gallery_images)
+
+        uploads = Array(values[:gallery_images]).reject(&:blank?)
+        values[:gallery_images] = object.gallery_images.blobs.to_a + uploads
+      end
+      super
+    end
+  end
+
+  member_action :remove_gallery_image, method: :post do
+    attachment = resource.gallery_images.attachments.find(params[:attachment_id])
+    attachment.purge_later
+    redirect_to edit_resource_path, notice: "Gallery file removed."
+  end
 
   index do
     selectable_column
@@ -38,15 +55,7 @@ ActiveAdmin.register District do
       end
 
       row :gallery_images do |district|
-        if district.gallery_images.attached?
-          div class: "gallery-grid" do
-            district.gallery_images.each do |img|
-              div class: "gallery-item" do
-                image_tag(img, size: "300x300", class: "img-corner")
-              end
-            end
-          end
-        end
+        render "admin/district_gallery", district: district
       end
       row :is_published
       row :meta_title
@@ -89,7 +98,6 @@ ActiveAdmin.register District do
         },
         hint: "Enter one social media link per line"
       f.input :main_image, as: :file
-      f.input :gallery_images, as: :file, input_html: { multiple: true }
       f.input :is_published
       f.input :meta_title
       f.input :meta_description, input_html: { class: "aa-plain-text" }
@@ -105,6 +113,12 @@ ActiveAdmin.register District do
       else
           f.input :updated_by, as: :hidden, input_html: { value: current_admin_user.full_name }
       end
+    end
+    f.inputs "Gallery files" do
+      f.input :gallery_images, as: :file,
+              input_html: { multiple: true, accept: "image/*", data: { district_gallery: true } },
+              hint: "Select multiple images or choose more files to add to your selection. Existing gallery files are kept."
+      render "admin/district_gallery", district: f.object if f.object.persisted?
     end
     f.actions
   end

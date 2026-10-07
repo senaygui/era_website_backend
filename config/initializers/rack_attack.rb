@@ -1,4 +1,8 @@
 class Rack::Attack
+  throttle("contact-messages/ip", limit: 5, period: 10.minutes) do |request|
+    request.ip if request.post? && request.path == "/api/v1/contact_messages"
+  end
+
   throttle("admin-login/ip", limit: 10, period: 1.minute) do |request|
     request.ip if request.post? && request.path == "/admin/login"
   end
