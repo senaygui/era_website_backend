@@ -24,7 +24,8 @@
 - Rails encrypted credentials; access controlled by `RAILS_MASTER_KEY`
 
 ### 2.4 CORS configuration
-- Configured via Rack::Cors initializer: `config/initializers/cors.rb`
+- Configured via Rack::Cors initializer: `config/initializers/cors.rb`. Production defaults allow `https://www.era.gov.et`, `https://era.gov.et`, and `https://prod-era.era.gov.et`.
+- `CORS_ALLOWED_ORIGINS` overrides these defaults with a comma-separated list of exact origins. Existing deployments with this variable set must include the live website origins. Restart Rails after changing it.
 
 ### 2.5 Document previews
 - `DOCUMENT_FRAME_ALLOWED_ORIGINS`: comma-separated frontend origins allowed to embed PDF responses from Active Storage. Defaults to `https://prod-era.era.gov.et` in production and `http://localhost:8080,http://127.0.0.1:8080` elsewhere. Use exact origins (scheme, host, and optional port), without paths or trailing slashes.
@@ -38,14 +39,14 @@
 - `VITE_API_URL` (preferred)
 
 ### 3.2 Default API URL fallback
-If `VITE_API_URL` is not set, the frontend falls back based on `window.location.hostname`:
-- On localhost: `http://localhost:3000/api/v1`
-- Otherwise: `https://era.gov.et:8081/api/v1`
+All API clients share `src/config/api.ts`. Without `VITE_API_URL`, requests use `/api/v1` on the website origin. Uploaded files use the same origin as the configured API.
 
-> Note: In production, prefer setting `VITE_API_URL` explicitly to avoid coupling to hostname assumptions.
+Production hosting must route `/api/` and `/rails/active_storage/` to Rails before the frontend SPA fallback. The live `https://www.era.gov.et/api/v1/news` route returned JSON with HTTP 200 during the 2026-10-12 check; the old public port `8081` timed out.
+
+If the API is hosted separately, set `VITE_API_URL` to its publicly reachable HTTPS URL ending in `/api/v1`, and include the frontend origin in Rails CORS. Vite reads this setting at build time: changing it requires rebuilding and deploying the frontend. Remove any old `https://era.gov.et:8081/api/v1` override.
 
 ### 3.3 Dev server proxy
-`vite.config.ts` proxies `/api` to `https://era.gov.et:8081/`.
+`vite.config.ts` proxies `/api` and `/rails/active_storage` to `http://127.0.0.1:3000`, or `VITE_PROXY_TARGET` when provided. Run Rails on that target while using the Vite development server.
 
 ## 4. Configuration Control (ISO 9001 / 12207)
 - All configuration is version-controlled except secrets.

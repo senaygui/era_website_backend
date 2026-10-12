@@ -9,7 +9,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     allowed_origins = if Rails.env.production?
-      ENV.fetch("CORS_ALLOWED_ORIGINS", "https://prod-era.era.gov.et").split(",").map(&:strip)
+      ENV.fetch("CORS_ALLOWED_ORIGINS", "https://www.era.gov.et,https://era.gov.et,https://prod-era.era.gov.et").split(",").map(&:strip).reject(&:empty?)
     else
       %w[http://localhost:8080 http://127.0.0.1:8080]
     end
