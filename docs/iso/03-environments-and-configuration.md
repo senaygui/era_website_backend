@@ -40,12 +40,12 @@
 ### 3.2 Default API URL fallback
 If `VITE_API_URL` is not set, the frontend falls back based on `window.location.hostname`:
 - On localhost: `http://localhost:3000/api/v1`
-- Otherwise: `https://prod-era.era.gov.et:8081/api/v1`
+- Otherwise: `https://era.gov.et:8081/api/v1`
 
 > Note: In production, prefer setting `VITE_API_URL` explicitly to avoid coupling to hostname assumptions.
 
 ### 3.3 Dev server proxy
-`vite.config.ts` proxies `/api` to `https://prod-era.era.gov.et:8081/`.
+`vite.config.ts` proxies `/api` to `https://era.gov.et:8081/`.
 
 ## 4. Configuration Control (ISO 9001 / 12207)
 - All configuration is version-controlled except secrets.
