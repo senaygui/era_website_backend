@@ -3,7 +3,8 @@ ActiveAdmin.register AboutUs do
   actions :all, except: [ :destroy, :new ]
 
   # Permit parameters
-  permit_params :title, :subtitle, :description, :mission, :vision, :values, :values_title,
+  permit_params :contact_address, :contact_phone_numbers, :contact_fax_numbers, :contact_emails, :contact_working_hours, :contact_map_url,
+                :title, :subtitle, :description, :mission, :vision, :values, :values_title,
                 :history, :team_description, :achievements, :achievements_description,
                 :milestones, :milestones_description, :partners,
                 :is_published, :meta_title, :meta_description, :meta_keywords,
@@ -33,6 +34,15 @@ ActiveAdmin.register AboutUs do
       f.input :subtitle
       f.input :description, as: :tiptap
       f.input :hero_image, as: :file, hint: f.object.persisted? && f.object.hero_image.attached? ? image_tag(f.object.hero_image, size: "200x150", class: "img-corner") : "No image uploaded"
+    end
+
+    f.inputs "Contact Information (Contact Us & Footer)" do
+      f.input :contact_address, label: "Address", as: :text, input_html: { rows: 4, class: "aa-plain-text" }
+      f.input :contact_phone_numbers, label: "Phone Numbers", as: :text, input_html: { rows: 4, class: "aa-plain-text" }, hint: "One entry per line."
+      f.input :contact_fax_numbers, label: "Fax Numbers", as: :text, input_html: { rows: 4, class: "aa-plain-text" }, hint: "One entry per line."
+      f.input :contact_emails, label: "Emails", as: :text, input_html: { rows: 4, class: "aa-plain-text" }, hint: "One entry per line."
+      f.input :contact_working_hours, label: "Working Hours", as: :text, input_html: { rows: 4, class: "aa-plain-text" }
+      f.input :contact_map_url, label: "Map Link", as: :url, hint: "Paste an HTTP or HTTPS map or directions link."
     end
 
     f.inputs "Mission & Vision" do
@@ -137,6 +147,17 @@ ActiveAdmin.register AboutUs do
         end
       end
       
+      panel "Contact Information" do
+        attributes_table_for resource do
+          row :contact_address
+          row :contact_phone_numbers
+          row :contact_fax_numbers
+          row :contact_emails
+          row :contact_working_hours
+          row :contact_map_url
+        end
+      end
+
       panel "Mission & Vision" do
         attributes_table_for resource do
           row :mission

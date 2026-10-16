@@ -5,6 +5,7 @@ module Api
         @about = AboutUs.instance
 
         render json: {
+          contact_information: @about.contact_information,
           title: @about.title,
           subtitle: @about.subtitle,
           description: @about.description,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_07_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -48,6 +48,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_07_000000) do
     t.text "achievements_description"
     t.text "milestones_description"
     t.string "values_title"
+    t.text "contact_address", default: "Ethiopian Roads Administration Building,\nAfrica Avenue (Bole Road),\nAddis Ababa, Ethiopia\nP.O. Box: 1770"
+    t.text "contact_phone_numbers", default: "+251-115-15-04-19\n+251-111-56-23-94"
+    t.text "contact_fax_numbers", default: "+251 11 554-44-34\n+251-111-55-12-95"
+    t.text "contact_emails", default: "info@era.gov.et\nbids@era.gov.et\nhr@era.gov.et"
+    t.text "contact_working_hours", default: "Monday to Friday: 8:30 AM - 5:30 PM\nSaturday: 8:30 AM - 12:30 PM\nSunday & Public Holidays: Closed"
+    t.string "contact_map_url", default: "https://www.google.com/maps/search/?api=1&query=Ethiopian+Roads+Administration+Addis+Ababa"
   end
 
   create_table "active_admin_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

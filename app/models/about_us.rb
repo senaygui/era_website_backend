@@ -37,6 +37,19 @@ class AboutUs < ApplicationRecord
   # Validate image content types
   validate :validate_image_content_types
 
+  validate :validate_contact_map_url
+
+  def contact_information
+    {
+      address: contact_address.to_s,
+      phone_numbers: contact_lines(contact_phone_numbers),
+      fax_numbers: contact_lines(contact_fax_numbers),
+      emails: contact_lines(contact_emails),
+      working_hours: contact_working_hours.to_s,
+      map_url: contact_map_url.to_s
+    }
+  end
+
   # Class methods
   def self.instance
     first_or_create(title: "About Us", description: "About Us description")
@@ -127,6 +140,21 @@ class AboutUs < ApplicationRecord
   end
 
   private
+
+  def contact_lines(value)
+    value.to_s.lines.map(&:strip).reject(&:blank?)
+  end
+
+  def validate_contact_map_url
+    return if contact_map_url.blank?
+
+    uri = URI.parse(contact_map_url)
+    unless uri.is_a?(URI::HTTP) && uri.host.present?
+      errors.add(:contact_map_url, "must be a valid HTTP or HTTPS URL")
+    end
+  rescue URI::InvalidURIError
+    errors.add(:contact_map_url, "must be a valid HTTP or HTTPS URL")
+  end
 
   def validate_image_content_types
     [ hero_image, mission_image, vision_image, history_image, org_structure_image ].each do |image|
