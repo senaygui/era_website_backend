@@ -1,6 +1,9 @@
 class Project < ApplicationRecord
   include SeoMetadataSync
   include FriendlySlug
+  include LocalizedContent
+  localizes :title, :description, :location, :contractor, :project_manager, :objectives,
+            :scope, :milestones, :challenges, :meta_title, :meta_description, :meta_keywords
 
   has_friendly_slug source: :title, fallback: "project"
 

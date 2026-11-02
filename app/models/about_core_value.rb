@@ -1,4 +1,6 @@
 class AboutCoreValue < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :description
   belongs_to :about_us
   has_one_attached :image
 

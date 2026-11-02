@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -22,6 +22,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.text "description_am"
     t.index ["about_us_id", "position"], name: "index_about_core_values_on_about_us_id_and_position"
     t.index ["about_us_id"], name: "index_about_core_values_on_about_us_id"
   end
@@ -54,6 +56,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.text "contact_emails", default: "info@era.gov.et\nbids@era.gov.et\nhr@era.gov.et"
     t.text "contact_working_hours", default: "Monday to Friday: 8:30 AM - 5:30 PM\nSaturday: 8:30 AM - 12:30 PM\nSunday & Public Holidays: Closed"
     t.string "contact_map_url", default: "https://www.google.com/maps/search/?api=1&query=Ethiopian+Roads+Administration+Addis+Ababa"
+    t.string "title_am"
+    t.string "subtitle_am"
+    t.text "description_am"
+    t.text "mission_am"
+    t.text "vision_am"
+    t.string "values_title_am"
+    t.text "values_am"
+    t.text "history_am"
+    t.text "team_description_am"
+    t.jsonb "achievements_am"
+    t.text "achievements_description_am"
+    t.jsonb "milestones_am"
+    t.text "milestones_description_am"
+    t.jsonb "partners_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.string "meta_keywords_am"
+    t.text "contact_address_am"
+    t.text "contact_working_hours_am"
   end
 
   create_table "active_admin_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -171,6 +192,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.boolean "is_published", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.string "type_of_bid_am"
+    t.string "funding_source_am"
+    t.text "description_am"
+    t.jsonb "eligibility_am"
+    t.string "contact_person_am"
+    t.string "award_status_am"
+    t.string "awarded_to_am"
     t.index ["bid_number"], name: "index_bids_on_bid_number", unique: true
     t.index ["category"], name: "index_bids_on_category"
     t.index ["deadline_date"], name: "index_bids_on_deadline_date"
@@ -210,6 +240,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "slug", null: false
+    t.string "name_am"
+    t.string "address_am"
+    t.text "district_overview_am"
+    t.text "detail_description_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.jsonb "meta_keywords_am"
     t.index ["is_published"], name: "index_districts_on_is_published"
     t.index ["name"], name: "index_districts_on_name", unique: true
     t.index ["slug"], name: "index_districts_on_slug", unique: true
@@ -239,6 +276,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.datetime "updated_at", null: false
     t.boolean "is_road_research_center", default: false
     t.boolean "is_road_research_center_event", default: false
+    t.string "title_am"
+    t.text "description_am"
+    t.text "excerpt_am"
+    t.string "location_am"
+    t.string "event_type_am"
+    t.text "agenda_am", default: [], array: true
+    t.text "speakers_am", default: [], array: true
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.string "meta_keywords_am"
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["is_featured"], name: "index_events_on_is_featured"
     t.index ["is_published"], name: "index_events_on_is_published"
@@ -261,6 +308,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "section_position", default: 1, null: false
+    t.string "title_am"
+    t.text "description_am"
+    t.string "cta_label_am"
     t.index ["is_published", "placement", "display_order"], name: "index_featured_sections_for_display"
     t.index ["is_published", "section_position", "display_order"], name: "index_featured_sections_by_page_position"
     t.index ["page_keys"], name: "index_featured_sections_on_page_keys", using: :gin
@@ -285,6 +335,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.datetime "updated_at", null: false
     t.string "youtube_url"
     t.string "legacy_slugs", default: [], null: false, array: true
+    t.string "title_am"
+    t.text "content_am"
+    t.text "excerpt_am"
+    t.string "category_am"
+    t.string "author_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.string "meta_keywords_am", default: [], array: true
     t.index ["category"], name: "index_news_on_category"
     t.index ["is_featured"], name: "index_news_on_is_featured"
     t.index ["is_published"], name: "index_news_on_is_published"
@@ -311,6 +369,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.text "description_am"
+    t.jsonb "authors_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.jsonb "meta_keywords_am"
     t.index ["category"], name: "index_performance_reports_on_category"
     t.index ["publish_date"], name: "index_performance_reports_on_publish_date"
     t.index ["status"], name: "index_performance_reports_on_status"
@@ -340,6 +405,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.boolean "is_road_research_center", default: false
     t.boolean "is_road_research_center_project", default: false
     t.string "slug", null: false
+    t.string "title_am"
+    t.text "description_am"
+    t.string "location_am"
+    t.string "contractor_am"
+    t.string "project_manager_am"
+    t.text "objectives_am"
+    t.text "scope_am"
+    t.jsonb "milestones_am"
+    t.jsonb "challenges_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.string "meta_keywords_am"
     t.index ["is_road_research_center"], name: "index_projects_on_is_road_research_center"
     t.index ["is_road_research_center_project"], name: "index_projects_on_is_road_research_center_project"
     t.index ["location"], name: "index_projects_on_location"
@@ -366,6 +443,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.text "description_am"
+    t.jsonb "authors_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.jsonb "meta_keywords_am"
     t.index ["category"], name: "index_publications_on_category"
     t.index ["publish_date"], name: "index_publications_on_publish_date"
     t.index ["status"], name: "index_publications_on_status"
@@ -390,6 +474,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.text "description_am"
+    t.jsonb "authors_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.jsonb "meta_keywords_am"
     t.index ["category"], name: "index_road_assets_on_category"
     t.index ["publish_date"], name: "index_road_assets_on_publish_date"
     t.index ["status"], name: "index_road_assets_on_status"
@@ -417,6 +508,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "contact_email"
     t.string "contact_hours"
     t.string "contact_map_url"
+    t.string "title_am"
+    t.string "hero_headline_am"
+    t.text "hero_subheadline_am"
+    t.text "about_am"
+    t.text "vision_am"
+    t.text "mission_am"
+    t.text "objectives_am"
+    t.text "organizational_structure_am"
+    t.string "contact_address_am"
+    t.string "contact_hours_am"
+    t.string "meta_title_am"
+    t.text "meta_description_am"
+    t.string "meta_keywords_am"
     t.index ["is_published"], name: "index_road_research_centers_on_is_published"
     t.index ["singleton_key"], name: "idx_rrc_singleton", unique: true
     t.index ["title"], name: "index_road_research_centers_on_title"
@@ -430,6 +534,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.boolean "is_published", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.text "caption_am"
     t.index ["road_research_center_id", "position"], name: "idx_rrc_gallery_position"
     t.index ["road_research_center_id"], name: "idx_rrc_gallery_center"
   end
@@ -443,6 +549,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "status", default: "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.text "description_am"
+    t.string "status_am"
     t.index ["road_research_center_id"], name: "idx_rr_lab_center"
     t.index ["title"], name: "index_road_research_laboratory_services_on_title"
   end
@@ -456,6 +566,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.string "status", default: "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "category_am"
+    t.text "description_am"
+    t.string "status_am"
     t.index ["road_research_center_id"], name: "index_road_research_technologies_on_road_research_center_id"
     t.index ["title"], name: "index_road_research_technologies_on_title"
   end
@@ -499,6 +613,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.uuid "about_us_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name_am"
+    t.string "position_am"
+    t.string "job_title_am"
+    t.text "description_am"
     t.index ["about_us_id"], name: "index_team_members_on_about_us_id"
   end
 
@@ -510,6 +628,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "expires_at"
+    t.string "notice_title_am"
+    t.text "notice_short_description_am"
     t.index ["expires_at"], name: "index_urgent_notices_on_expires_at"
     t.index ["is_published", "created_at"], name: "index_urgent_notices_on_is_published_and_created_at"
   end
@@ -530,6 +650,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_15_000000) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_am"
+    t.string "department_am"
+    t.string "location_am"
+    t.string "job_type_am"
+    t.text "description_am"
+    t.string "salary_am"
+    t.jsonb "requirements_am"
+    t.jsonb "responsibilities_am"
+    t.jsonb "benefits_am"
     t.index ["deadline"], name: "index_vacancies_on_deadline"
     t.index ["department"], name: "index_vacancies_on_department"
     t.index ["is_published"], name: "index_vacancies_on_is_published"

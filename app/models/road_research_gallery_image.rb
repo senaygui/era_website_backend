@@ -1,4 +1,6 @@
 class RoadResearchGalleryImage < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :caption
   belongs_to :road_research_center
   has_one_attached :image
 

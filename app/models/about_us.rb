@@ -1,5 +1,10 @@
 class AboutUs < ApplicationRecord
   include SeoMetadataSync
+  include LocalizedContent
+  localizes :title, :subtitle, :description, :mission, :vision, :values_title, :values,
+            :history, :team_description, :achievements, :achievements_description,
+            :milestones, :milestones_description, :partners, :meta_title,
+            :meta_description, :meta_keywords, :contact_address, :contact_working_hours
 
   # Set the table name explicitly since Rails would expect 'about_uses'
   self.table_name = "about_us"
@@ -52,7 +57,14 @@ class AboutUs < ApplicationRecord
 
   # Class methods
   def self.instance
-    first_or_create(title: "About Us", description: "About Us description")
+    amharic_defaults = localized_attribute_names.index_with { |_name| "የአማርኛ ይዘት" }
+                                                .transform_keys { |name| "#{name}_am" }
+    first_or_create(amharic_defaults.merge(
+      title: "About Us",
+      description: "About Us description",
+      title_am: "ስለ እኛ",
+      description_am: "ስለ እኛ መግለጫ"
+    ))
   end
 
   # Instance methods

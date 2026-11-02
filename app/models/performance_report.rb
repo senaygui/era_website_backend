@@ -1,5 +1,7 @@
 class PerformanceReport < ApplicationRecord
   include SeoMetadataSync
+  include LocalizedContent
+  localizes :title, :category, :description, :authors, :meta_title, :meta_description, :meta_keywords
 
   # ActiveStorage attachments
   has_many_attached :documents

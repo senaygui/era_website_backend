@@ -1,6 +1,9 @@
 class District < ApplicationRecord
   include SeoMetadataSync
   include FriendlySlug
+  include LocalizedContent
+  localizes :name, :address, :district_overview, :detail_description, :meta_title,
+            :meta_description, :meta_keywords
 
   has_friendly_slug source: :name, fallback: "district"
 

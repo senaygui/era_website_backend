@@ -1,4 +1,7 @@
 class Bid < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :category, :type_of_bid, :funding_source, :description, :eligibility,
+            :contact_person, :award_status, :awarded_to
   has_many_attached :documents
   
   validates :bid_number, presence: true, uniqueness: true

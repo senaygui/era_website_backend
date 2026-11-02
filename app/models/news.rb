@@ -3,6 +3,8 @@ require "uri"
 
 class News < ApplicationRecord
   include FriendlySlug
+  include LocalizedContent
+  localizes :title, :content, :excerpt, :category, :author, :meta_title, :meta_description, :meta_keywords
 
   CATEGORIES = [
     "Road Construction & Development",

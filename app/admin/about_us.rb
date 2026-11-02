@@ -10,8 +10,8 @@ ActiveAdmin.register AboutUs do
                 :is_published, :meta_title, :meta_description, :meta_keywords,
                 :hero_image, :mission_image, :vision_image, :history_image, :org_structure_image,
                 team_images: [],
-                about_core_values_attributes: [ :id, :title, :description, :position, :image, :_destroy ],
-                team_members_attributes: [ :id, :name, :position, :job_title, :description, :image, :_destroy ]
+                about_core_values_attributes: [ :id, :title, :title_am, :description, :description_am, :position, :image, :_destroy ],
+                team_members_attributes: [ :id, :name, :name_am, :position, :position_am, :job_title, :job_title_am, :description, :description_am, :image, :_destroy ]
 
   # Index page configuration
   index do
@@ -57,6 +57,8 @@ ActiveAdmin.register AboutUs do
       f.has_many :about_core_values, allow_destroy: true, new_record: "Add Core Value", heading: false do |value|
         value.input :title
         value.input :description, as: :text, input_html: { rows: 3, class: "aa-plain-text" }
+        value.input :title_am, label: "Title (አማርኛ)", required: true
+        value.input :description_am, as: :text, label: "Description (አማርኛ)", required: true, input_html: { rows: 3, class: "aa-plain-text", required: true }
         value.input :position, hint: "Lower numbers appear first."
         value.input :image,
                     as: :file,
@@ -75,6 +77,9 @@ ActiveAdmin.register AboutUs do
         tm.input :name
         tm.input :job_title
         tm.input :description, as: :tiptap
+        tm.input :name_am, label: "Name (አማርኛ)", required: true
+        tm.input :job_title_am, label: "Job title (አማርኛ)", required: true
+        tm.input :description_am, as: :text, label: "Description (አማርኛ)", required: true, input_html: { rows: 4, class: "aa-plain-text", required: true }
         tm.input :image, as: :file, hint: (tm.object.persisted? && tm.object.image.attached?) ? image_tag(tm.object.image, size: "100x100", class: "img-corner") : "No image uploaded"
       end
       f.input :team_images, as: :file, input_html: { multiple: true }

@@ -1,6 +1,8 @@
 require "uri"
 
 class UrgentNotice < ApplicationRecord
+  include LocalizedContent
+  localizes :notice_title, :notice_short_description
   ALLOWED_FILE_TYPES = %w[
     application/pdf
     application/msword

@@ -1,4 +1,7 @@
 class Vacancy < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :department, :location, :job_type, :description, :salary,
+            :requirements, :responsibilities, :benefits
   # Set UUID as primary key
   self.primary_key = :id
   

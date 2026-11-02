@@ -1,6 +1,8 @@
 require "uri"
 
 class FeaturedSection < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :description, :cta_label
   PAGE_OPTIONS = {
     "All pages" => "all",
     "Home" => "home",

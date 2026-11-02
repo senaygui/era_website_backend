@@ -1,4 +1,6 @@
 class TeamMember < ApplicationRecord
+  include LocalizedContent
+  localizes :name, :position, :job_title, :description
   belongs_to :about_us
 
   has_one_attached :image

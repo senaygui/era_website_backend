@@ -2,6 +2,10 @@ require "uri"
 
 class RoadResearchCenter < ApplicationRecord
   include SeoMetadataSync
+  include LocalizedContent
+  localizes :title, :hero_headline, :hero_subheadline, :about, :vision, :mission,
+            :objectives, :organizational_structure, :contact_address, :contact_hours,
+            :meta_title, :meta_description, :meta_keywords
 
   # Associations
   has_many :road_research_technologies, dependent: :destroy
@@ -40,7 +44,14 @@ class RoadResearchCenter < ApplicationRecord
 
   # Convenience accessor to get-or-create the singleton record
   def self.instance
-    first_or_create!(title: "Road Research Center", about: "Road Research Center content")
+    amharic_defaults = localized_attribute_names.index_with { |_name| "የአማርኛ ይዘት" }
+                                                .transform_keys { |name| "#{name}_am" }
+    first_or_create!(amharic_defaults.merge(
+      title: "Road Research Center",
+      about: "Road Research Center content",
+      title_am: "የመንገድ ምርምር ማዕከል",
+      about_am: "የመንገድ ምርምር ማዕከል ይዘት"
+    ))
   end
 
   private

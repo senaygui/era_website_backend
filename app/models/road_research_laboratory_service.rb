@@ -1,4 +1,6 @@
 class RoadResearchLaboratoryService < ApplicationRecord
+  include LocalizedContent
+  localizes :title, :category, :description, :status
   belongs_to :road_research_center
 
   validates :title, presence: true
