@@ -85,6 +85,7 @@ module Api
           capacity: event.capacity,
           registration_required: event.registration_required,
           status: event.status,
+          status_label: event.localized_value(:status),
           is_featured: event.is_featured,
           is_published: event.is_published,
           image_url: image_url,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_02_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -201,6 +201,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.string "contact_person_am"
     t.string "award_status_am"
     t.string "awarded_to_am"
+    t.string "status_am"
+    t.string "budget_am"
+    t.string "contract_value_am"
     t.index ["bid_number"], name: "index_bids_on_bid_number", unique: true
     t.index ["category"], name: "index_bids_on_category"
     t.index ["deadline_date"], name: "index_bids_on_deadline_date"
@@ -287,6 +290,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.text "meta_description_am"
     t.string "meta_keywords_am"
     t.string "time_am"
+    t.string "status_am"
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["is_featured"], name: "index_events_on_is_featured"
     t.index ["is_published"], name: "index_events_on_is_published"
@@ -379,6 +383,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
     t.string "citation_information_am"
+    t.string "status_am"
     t.index ["category"], name: "index_performance_reports_on_category"
     t.index ["publish_date"], name: "index_performance_reports_on_publish_date"
     t.index ["status"], name: "index_performance_reports_on_status"
@@ -420,6 +425,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.string "meta_keywords_am"
+    t.string "status_am"
     t.index ["is_road_research_center"], name: "index_projects_on_is_road_research_center"
     t.index ["is_road_research_center_project"], name: "index_projects_on_is_road_research_center_project"
     t.index ["location"], name: "index_projects_on_location"
@@ -454,6 +460,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
     t.string "citation_information_am"
+    t.string "status_am"
     t.index ["category"], name: "index_publications_on_category"
     t.index ["publish_date"], name: "index_publications_on_publish_date"
     t.index ["status"], name: "index_publications_on_status"
@@ -486,6 +493,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
     t.string "citation_information_am"
+    t.string "status_am"
     t.index ["category"], name: "index_road_assets_on_category"
     t.index ["publish_date"], name: "index_road_assets_on_publish_date"
     t.index ["status"], name: "index_road_assets_on_status"

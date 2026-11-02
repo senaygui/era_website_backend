@@ -87,6 +87,7 @@ module Api
           title: project.title,
           description: project.description,
           status: project.status,
+          status_label: project.localized_value(:status),
           location: project.location,
           start_date: project.start_date,
           end_date: project.end_date,

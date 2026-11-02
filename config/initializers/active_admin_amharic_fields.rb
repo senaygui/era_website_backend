@@ -10,7 +10,7 @@ module ActiveAdminAmharicFormFields
 
   def add_amharic_inputs
     @amharic_inputs_added = true
-    names = object.class.respond_to?(:localized_attribute_names) ? object.class.localized_attribute_names : []
+    names = object.class.respond_to?(:amharic_attribute_names) ? object.class.amharic_attribute_names : []
     return if names.empty?
 
     inputs "Amharic translation (አማርኛ)" do
@@ -37,7 +37,7 @@ module ActiveAdminAmharicParameters
   def permitted_params
     permitted = super
     model = active_admin_config.resource_class
-    names = model.respond_to?(:localized_attribute_names) ? model.localized_attribute_names : []
+    names = model.respond_to?(:amharic_attribute_names) ? model.amharic_attribute_names : []
     key = active_admin_config.param_key.to_s
     submitted = params[key]
     target = permitted[key]

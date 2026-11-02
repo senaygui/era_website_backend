@@ -4,6 +4,7 @@ class Event < ApplicationRecord
   include LocalizedContent
   localizes :title, :description, :excerpt, :location, :time, :event_type, :agenda, :speakers,
             :meta_title, :meta_description, :meta_keywords
+  requires_amharic :status
   # ActiveStorage
   has_one_attached :event_image
 

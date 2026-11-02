@@ -6,6 +6,7 @@ class Publication < ApplicationRecord
   include LocalizedContent
   localizes :title, :category, :description, :authors, :citation_information,
             :meta_title, :meta_description, :meta_keywords
+  requires_amharic :status
 
   # ActiveStorage attachments
   has_many_attached :documents

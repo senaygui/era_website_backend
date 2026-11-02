@@ -41,6 +41,8 @@ module Api
           description: p.description,
           downloadCount: p.download_count,
           isNew: p.is_new,
+          status: p.status,
+          status_label: p.localized_value(:status),
           authors: p.authors,
           citation_information: p.citation_information,
           meta_title: p.meta_title,

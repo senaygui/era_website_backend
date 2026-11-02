@@ -10,6 +10,7 @@ module LocalizedContent
     # English remains the fallback for partially translated records.
     def localizes(*attribute_names)
       @localized_attribute_names = attribute_names.map(&:to_sym)
+      @amharic_attribute_names = (@amharic_attribute_names || []) | @localized_attribute_names
 
       attribute_names.each do |attribute_name|
         define_method(attribute_name) do
@@ -44,12 +45,25 @@ module LocalizedContent
     def localized_attribute_names
       @localized_attribute_names || []
     end
+
+    def requires_amharic(*attribute_names)
+      @amharic_attribute_names = (@amharic_attribute_names || []) | attribute_names.map(&:to_sym)
+    end
+
+    def amharic_attribute_names
+      @amharic_attribute_names || localized_attribute_names
+    end
+  end
+
+  def localized_value(attribute_name)
+    translated = self["#{attribute_name}_am"]
+    I18n.locale == :am && translated.present? ? translated : self[attribute_name]
   end
 
   private
 
   def amharic_translations_are_complete
-    self.class.localized_attribute_names.each do |attribute_name|
+    self.class.amharic_attribute_names.each do |attribute_name|
       translated_name = "#{attribute_name}_am"
       value = self[translated_name]
 

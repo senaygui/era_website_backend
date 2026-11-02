@@ -88,6 +88,7 @@ module Api
           category: bid.category,
           type: bid.type_of_bid,
           status: bid.computed_status,
+          status_label: bid.localized_value(:status),
           publishDate: bid.publish_date,
           deadlineDate: bid.deadline_date,
           budget: bid.budget,

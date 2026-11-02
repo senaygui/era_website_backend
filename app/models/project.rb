@@ -4,6 +4,7 @@ class Project < ApplicationRecord
   include LocalizedContent
   localizes :title, :description, :location, :contractor, :project_manager, :objectives,
             :scope, :milestones, :challenges, :meta_title, :meta_description, :meta_keywords
+  requires_amharic :status
 
   has_friendly_slug source: :title, fallback: "project"
 
