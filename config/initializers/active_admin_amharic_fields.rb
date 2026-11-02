@@ -17,10 +17,12 @@ module ActiveAdminAmharicFormFields
       names.each do |name|
         column = object.class.columns_hash[name.to_s]
         options = { label: "#{name.to_s.humanize} (አማርኛ)", required: true }
-        if column&.type == :text || column&.array
+        if column&.type.in?([ :text, :jsonb ]) || column&.array
           options[:as] = :text
           options[:input_html] = { rows: 4, class: "aa-plain-text", required: true }
-          options[:input_html][:value] = Array(object.public_send("#{name}_am")).join("\n") if column&.array
+          current_value = object.public_send("#{name}_am")
+          options[:input_html][:value] = Array(current_value).join("\n") if column&.array
+          options[:input_html][:value] = current_value.to_json if column&.type == :jsonb && current_value.present?
         end
         input "#{name}_am", **options
       end

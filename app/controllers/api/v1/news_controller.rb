@@ -59,7 +59,7 @@ module Api
           excerpt: news.excerpt,
           published_date: news.published_date,
           category: news.category,
-          tags: news.tag_list,
+          tags: news.localized_tag_list,
           is_featured: news.is_featured,
           view_count: news.view_count,
           author: news.author,

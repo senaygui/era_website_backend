@@ -49,6 +49,10 @@ module Api
           downloadCount: p.download_count,
           isNew: p.is_new,
           authors: p.authors,
+          citation_information: p.citation_information,
+          meta_title: p.meta_title,
+          meta_description: p.meta_description,
+          meta_keywords: p.meta_keywords,
           documents: p.documents.map { |d| serialize_blob(d) },
           thumbnail: p.thumbnail.attached? ? url_for(p.thumbnail) : nil
         }

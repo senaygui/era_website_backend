@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_02_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -286,6 +286,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.string "meta_keywords_am"
+    t.string "time_am"
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["is_featured"], name: "index_events_on_is_featured"
     t.index ["is_published"], name: "index_events_on_is_published"
@@ -343,6 +344,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.string "meta_keywords_am", default: [], array: true
+    t.text "tags_am", default: [], array: true
     t.index ["category"], name: "index_news_on_category"
     t.index ["is_featured"], name: "index_news_on_is_featured"
     t.index ["is_published"], name: "index_news_on_is_published"
@@ -376,6 +378,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
+    t.string "citation_information_am"
     t.index ["category"], name: "index_performance_reports_on_category"
     t.index ["publish_date"], name: "index_performance_reports_on_publish_date"
     t.index ["status"], name: "index_performance_reports_on_status"
@@ -450,6 +453,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
+    t.string "citation_information_am"
     t.index ["category"], name: "index_publications_on_category"
     t.index ["publish_date"], name: "index_publications_on_publish_date"
     t.index ["status"], name: "index_publications_on_status"
@@ -481,6 +485,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_000000) do
     t.string "meta_title_am"
     t.text "meta_description_am"
     t.jsonb "meta_keywords_am"
+    t.string "citation_information_am"
     t.index ["category"], name: "index_road_assets_on_category"
     t.index ["publish_date"], name: "index_road_assets_on_publish_date"
     t.index ["status"], name: "index_road_assets_on_status"

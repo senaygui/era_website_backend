@@ -78,6 +78,7 @@ ActiveAdmin.register AboutUs do
         tm.input :job_title
         tm.input :description, as: :tiptap
         tm.input :name_am, label: "Name (አማርኛ)", required: true
+        tm.input :position_am, label: "Position (አማርኛ)", required: true
         tm.input :job_title_am, label: "Job title (አማርኛ)", required: true
         tm.input :description_am, as: :text, label: "Description (አማርኛ)", required: true, input_html: { rows: 4, class: "aa-plain-text", required: true }
         tm.input :image, as: :file, hint: (tm.object.persisted? && tm.object.image.attached?) ? image_tag(tm.object.image, size: "100x100", class: "img-corner") : "No image uploaded"

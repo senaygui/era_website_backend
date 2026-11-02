@@ -92,6 +92,9 @@ module Api
           end_date: project.end_date,
           contractor: project.contractor,
           project_manager: project.project_manager,
+          meta_title: project.meta_title,
+          meta_description: project.meta_description,
+          meta_keywords: project.meta_keywords,
           images: project.images.attached? ? project.images.map { |image| 
             {
               id: image.id,

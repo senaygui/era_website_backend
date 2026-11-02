@@ -25,6 +25,16 @@ module LocalizedContent
         define_method("#{attribute_name}_am=") do |value|
           original_column = self.class.columns_hash[attribute_name.to_s]
           value = value.to_s.lines.map(&:strip).reject(&:blank?) if original_column&.array && value.is_a?(String)
+          if original_column&.type == :jsonb && value.is_a?(String)
+            stripped = value.strip
+            value = if stripped.start_with?("[", "{")
+              JSON.parse(stripped)
+            else
+              stripped.lines.map(&:strip).reject(&:blank?)
+            end
+          end
+          self["#{attribute_name}_am"] = value
+        rescue JSON::ParserError
           self["#{attribute_name}_am"] = value
         end
       end

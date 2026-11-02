@@ -1,6 +1,6 @@
 ActiveAdmin.register RoadAsset do
   menu parent: "Resources", priority: 1
-  permit_params :thumbnail, :title, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :status, :published_by, :updated_by, authors: [], documents: []
+  permit_params :thumbnail, :title, :category, :year, :publish_date, :description, :download_count, :is_new, :meta_title, :meta_description, :meta_keywords, :citation_information, :status, :published_by, :updated_by, authors: [], documents: []
 
   controller do
     def create
@@ -127,6 +127,8 @@ ActiveAdmin.register RoadAsset do
       f.input :is_new
       f.input :meta_title
       f.input :meta_description, input_html: { class: "aa-plain-text" }
+      f.input :meta_keywords, as: :text, input_html: { class: "aa-plain-text", rows: 3 }
+      f.input :citation_information
       f.input :status, as: :select, collection: %w[draft published archived]
       f.input :published_by
       f.input :updated_by

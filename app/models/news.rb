@@ -76,6 +76,19 @@ class News < ApplicationRecord
     increment!(:view_count)
   end
 
+  def localized_tag_list
+    return tags_am if I18n.locale == :am && tags_am.present?
+
+    tag_list
+  end
+
+  def tags_am=(value)
+    value = value.to_s.lines.map(&:strip).reject(&:blank?) if value.is_a?(String)
+    self[:tags_am] = value
+  end
+
+  validate :amharic_tags_are_present
+
   def image_url
     Rails.application.routes.url_helpers.url_for(image) if image.attached?
   end
@@ -106,6 +119,14 @@ class News < ApplicationRecord
   end
 
   private
+
+  def amharic_tags_are_present
+    if tags_am.blank?
+      errors.add(:tags_am, "is required")
+    elsif !tags_am.to_json.match?(/\p{Ethiopic}/)
+      errors.add(:tags_am, "must contain Amharic text")
+    end
+  end
 
   def generate_excerpt
     return if excerpt.present?

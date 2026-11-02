@@ -2,7 +2,7 @@ ActiveAdmin.register News do
   menu parent: "Events & News", priority: 1
   permit_params :title, :content, :excerpt, :published_date, :is_published,
                 :category, :is_featured, :author, :meta_title, :meta_description,
-                :image, :tag_list, :meta_keywords, :youtube_url
+                :image, :tag_list, :meta_keywords, :youtube_url, :tags_am
 
   # Rely on default update action
 
@@ -71,6 +71,12 @@ ActiveAdmin.register News do
                 value: f.object.tag_list.join(", "),
                 placeholder: "road safety, bridge, maintenance"
               }
+      f.input :tags_am,
+              as: :text,
+              label: "Tags (አማርኛ)",
+              required: true,
+              hint: "Enter one Amharic tag per line.",
+              input_html: { value: f.object.tags_am.join("\n"), rows: 4, class: "aa-plain-text", required: true }
       f.input :is_published
       f.input :is_featured
       f.input :author
